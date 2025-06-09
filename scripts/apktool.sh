@@ -79,18 +79,9 @@ BUILD()
     local FILE_NAME
     FILE_NAME="$(basename "$INPUT_FILE")"
 
-    if [[ "$INPUT_FILE" == *".apk" ]]; then
-        local CERT_PREFIX="aosp"
-        $ROM_IS_OFFICIAL && CERT_PREFIX="unica"
-
-        LOG "- Signing ${INPUT_FILE//$WORK_DIR/}"
-        EVAL "signapk \"$SRC_DIR/security/${CERT_PREFIX}_platform.x509.pem\" \"$SRC_DIR/security/${CERT_PREFIX}_platform.pk8\" \"$OUTPUT_PATH/dist/$FILE_NAME\" \"$OUTPUT_PATH/dist/temp.apk\"" || exit 1
-        mv -f "$OUTPUT_PATH/dist/temp.apk" "$OUTPUT_PATH/dist/$FILE_NAME"
-    else
-        LOG "- Zipaligning ${INPUT_FILE//$WORK_DIR/}"
-        EVAL "zipalign -p 4 \"$OUTPUT_PATH/dist/$FILE_NAME\" \"$OUTPUT_PATH/dist/temp\"" || exit 1
-        mv -f "$OUTPUT_PATH/dist/temp" "$OUTPUT_PATH/dist/$FILE_NAME"
-    fi
+    LOG "- Zipaligning ${INPUT_FILE//$WORK_DIR/}"
+    EVAL "zipalign -p 4 \"$OUTPUT_PATH/dist/$FILE_NAME\" \"$OUTPUT_PATH/dist/temp\"" || exit 1
+    mv -f "$OUTPUT_PATH/dist/temp" "$OUTPUT_PATH/dist/$FILE_NAME"
 
     mkdir -p "$(dirname "$INPUT_FILE")"
     mv -f "$OUTPUT_PATH/dist/$FILE_NAME" "$INPUT_FILE"
@@ -127,7 +118,11 @@ DECODE()
     fi
 
     LOG "- Decoding ${INPUT_FILE//$WORK_DIR/}"
-    EVAL "apktool d -j \"$(nproc)\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" -s \"$INPUT_FILE\"" || exit 1
+    if [[ "$INPUT_FILE" == *rro_*.apk ]]; then
+        EVAL "apktool d -j \"$(nproc)\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" -s \"$INPUT_FILE\"" || exit 1
+    else
+        EVAL "apktool d -j \"$(nproc)\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" -r -s \"$INPUT_FILE\"" || exit 1
+    fi
 
     # DEX format version might not be matching minSdkVersion, currently we handle
     # baksmali manually as apktool will by default use minSdkVersion when available
