@@ -1,0 +1,13 @@
+
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON/HotwordEnrollmentOKGoogleEx3HEXAGON\.apk u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON/oat u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON/oat/arm64 u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON/oat/arm64/HotwordEnrollmentOKGoogleEx3HEXAGON\.odex u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON/oat/arm64/HotwordEnrollmentOKGoogleEx3HEXAGON\.vdex u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON/HotwordEnrollmentXGoogleEx3HEXAGON\.apk u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON/oat u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON/oat/arm64 u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON/oat/arm64/HotwordEnrollmentXGoogleEx3HEXAGON\.odex u:object_r:system_file:s0
+/product/priv-app/HotwordEnrollmentXGoogleEx3HEXAGON/oat/arm64/HotwordEnrollmentXGoogleEx3HEXAGON\.vdex u:object_r:system_file:s0
