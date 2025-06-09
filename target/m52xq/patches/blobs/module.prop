@@ -1,0 +1,4 @@
+id=blobs
+name=Blobs
+author=salvogiangri, yagzie, utkustnr
+description=Replaces generic source blobs with the ones at the script(s).
