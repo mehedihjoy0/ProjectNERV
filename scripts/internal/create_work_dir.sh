@@ -22,6 +22,23 @@ source "$SRC_DIR/scripts/utils/build_utils.sh" || exit 1
 SOURCE_FIRMWARE_PATH="$(cut -d "/" -f 1 -s <<< "$SOURCE_FIRMWARE")_$(cut -d "/" -f 2 -s <<< "$SOURCE_FIRMWARE")"
 TARGET_FIRMWARE_PATH="$(cut -d "/" -f 1 -s <<< "$TARGET_FIRMWARE")_$(cut -d "/" -f 2 -s <<< "$TARGET_FIRMWARE")"
 
+COPY_SOURCE_CSC()
+{
+    local SOURCE_FOLDERS="optics prism"
+    for f in $SOURCE_FOLDERS; do
+        if [ -d "$FW_DIR/$SOURCE_FIRMWARE_PATH/$f" ]; then
+            LOG "- Copying /$f from source firmware"
+            EVAL "rsync -a --mkpath --delete \"$FW_DIR/$SOURCE_FIRMWARE_PATH/$f\" \"$WORK_DIR\"" || exit 1
+            EVAL "cp -a \"$FW_DIR/$TARGET_FIRMWARE_PATH/file_context-$f\" \"$WORK_DIR/configs/file_context-$f\"" || exit 1
+            EVAL "cp -a \"$FW_DIR/$TARGET_FIRMWARE_PATH/fs_config-$f\" \"$WORK_DIR/configs/fs_config-$f\"" || exit 1
+        else
+            [ -d "$WORK_DIR/$f" ] && rm -rf "$WORK_DIR/$f"
+            [ -f "$WORK_DIR/configs/file_context-$f" ] && rm -f "$WORK_DIR/configs/file_context-$f"
+            [ -f "$WORK_DIR/configs/fs_config-$f" ] && rm -f "$WORK_DIR/configs/fs_config-$f"
+        fi
+    done
+}
+
 COPY_SOURCE_FIRMWARE()
 {
     local SOURCE_FOLDERS="product system"
@@ -156,6 +173,7 @@ mkdir -p "$WORK_DIR"
 mkdir -p "$WORK_DIR/configs"
 COPY_SOURCE_FIRMWARE
 COPY_TARGET_FIRMWARE
+COPY_SOURCE_CSC
 COPY_TARGET_KERNEL
 
 exit 0

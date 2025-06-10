@@ -47,6 +47,32 @@ bin/install-recovery.sh
 etc/init/vendor_flash_recovery.rc
 "
 
+# Vendor sepolicy version
+VENDOR_DEBLOAT+="
+etc/selinux/vendor_sepolicy_version
+"
+
+# Optics debloat
+OPTICS_DEBLOAT+="
+configs/carriers/single/ILO
+configs/carriers/single/ILP
+"
+
+# Prism debloat
+PRISM_DEBLOAT+="
+HWRDB/data/hwr_zh_CN.dat
+HWRDB/data/hwr_zh_HK.dat
+HWRDB/data/hwr_zh_TW.dat
+app
+etc/carriers/single/ILO
+etc/carriers/single/ILP
+media
+preload
+priv-app
+sipdb/SOGOUDB
+sipdb/Xt9
+"
+
 # Apps debloat
 PRODUCT_DEBLOAT+="
 app/AssistantShell
