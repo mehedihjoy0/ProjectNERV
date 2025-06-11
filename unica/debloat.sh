@@ -76,6 +76,7 @@ sipdb/Xt9
 # Apps debloat
 PRODUCT_DEBLOAT+="
 app/AssistantShell
+app/BardShell
 app/Chrome
 app/DuoStub
 app/Gmail2
@@ -85,6 +86,7 @@ overlay/GmsConfigOverlaySearchSelector.apk
 priv-app/Messages
 priv-app/SearchSelector
 "
+
 SYSTEM_DEBLOAT+="
 system/app/AutomationTest_FB
 system/app/DRParser
@@ -92,7 +94,6 @@ system/app/DictDiotekForSec
 system/app/FactoryAirCommandManager
 system/app/FactoryCameraFB
 system/app/FBAppManager_NS
-system/app/HMT
 system/app/MoccaMobile
 system/app/PlayAutoInstallConfig
 system/app/SamsungCalendar
@@ -114,7 +115,6 @@ system/app/SamsungTTSVoice_vi_VN_f00
 system/app/SilentLog
 system/app/SmartReminder
 system/app/WebManual
-system/app/WlanTest
 system/etc/init/digitalkey_init_nfc_tss2.rc
 system/etc/init/samsung_pass_authenticator_service.rc
 system/etc/permissions/privapp-permissions-com.microsoft.skydrive.xml
@@ -122,6 +122,7 @@ system/etc/permissions/privapp-permissions-com.samsung.android.app.kfa.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.authfw.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.carkey.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.cidmanager.xml
+system/etc/permissions/privapp-permissions-com.sec.android.app.dexonpc.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.dkey.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.game.gamehome.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.providers.factory.xml
@@ -144,29 +145,25 @@ system/etc/sysconfig/preinstalled-packages-com.samsung.android.spayfw.xml
 system/etc/sysconfig/samsungauthframework.xml
 system/etc/sysconfig/samsungpassapp.xml
 system/hidden/SmartTutor
-system/lib64/librildump_jni.so
 system/preload
 system/priv-app/AuthFramework
 system/priv-app/BCService
 system/priv-app/CIDManager
 system/priv-app/DeviceKeystring
+system/priv-app/DeXonPC
 system/priv-app/DiagMonAgent91
 system/priv-app/DigitalKey
 system/priv-app/FBInstaller_NS
 system/priv-app/FBServices
-system/priv-app/FacAtFunction
 system/priv-app/FactoryTestProvider
 system/priv-app/FotaAgent
 system/priv-app/GameHome
-system/priv-app/ModemServiceMode
 system/priv-app/OneDrive_Samsung_v3
 system/priv-app/OMCAgent5
 system/priv-app/PaymentFramework
-system/priv-app/SEMFactoryApp
 system/priv-app/SOAgent7
 system/priv-app/SamsungCarKeyFw
 system/priv-app/SamsungPass
-system/priv-app/SmartEpdgTestApp
 system/priv-app/Upday
 "
 
