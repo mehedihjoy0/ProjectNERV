@@ -17,7 +17,7 @@
 
 # UN1CA configuration file for Qualcomm devices (qssi)
 
-# Galaxy S23 (One UI 6.1.1)
+# Galaxy S23 (One UI 7)
 SOURCE_FIRMWARE="SM-S911B/EUX/352404911234563"
 SOURCE_EXTRA_FIRMWARES=()
 SOURCE_API_LEVEL=34
