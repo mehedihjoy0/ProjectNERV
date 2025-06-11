@@ -12,3 +12,6 @@ security/unica_platform.pk8
 !.gitattributes
 !.gitignore
 !.gitmodules
+
+# Windows Zone Identifier files
+*:*Zone.Identifier
