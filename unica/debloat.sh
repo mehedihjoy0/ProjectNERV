@@ -160,6 +160,7 @@ system/priv-app/FotaAgent
 system/priv-app/GameHome
 system/priv-app/ModemServiceMode
 system/priv-app/OneDrive_Samsung_v3
+system/priv-app/OMCAgent5
 system/priv-app/PaymentFramework
 system/priv-app/SEMFactoryApp
 system/priv-app/SOAgent7
