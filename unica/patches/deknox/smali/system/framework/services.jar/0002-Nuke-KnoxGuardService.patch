@@ -1,15 +1,19 @@
-From c47e10e1bc4cba57cbf527c3b8d6a86fe2e4a1db Mon Sep 17 00:00:00 2001
+From e430c464e6ba54b5e0bf9862eb79db50e415fa15 Mon Sep 17 00:00:00 2001
 From: Louis Poier <lpoier7@proton.me>
 Date: Sun, 20 Apr 2025 17:14:35 +0200
 Subject: [PATCH] Nuke KnoxGuardService
 
 Signed-off-by: Louis Poier <lpoier7@proton.me>
+Signed-off-by: utkustnr <utkuustuner@proton.me>
+---
+ smali/com/android/server/SystemServer.smali | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/smali/com/android/server/SystemServer.smali b/smali/com/android/server/SystemServer.smali
-index f0e0c61c..25d261e5 100644
+index b5d8676c..093aa2ac 100644
 --- a/smali/com/android/server/SystemServer.smali
 +++ b/smali/com/android/server/SystemServer.smali
-@@ -10020,11 +10020,7 @@
+@@ -9948,11 +9948,7 @@
  
      invoke-virtual/range {p1 .. p1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
