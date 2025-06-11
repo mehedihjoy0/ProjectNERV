@@ -104,17 +104,11 @@ CscFeature_Camera_CameraFlicker=50hz
 CscFeature_Camera_DefaultQuality=superfine
 CscFeature_Camera_ShutterSoundMenu=TRUE
 CscFeature_Clock_DisableIsraelCountry=TRUE
-CscFeature_Common_SupportZProjectFunctionInGlobal=TRUE
 CscFeature_Contact_SupportUiccPrompt=TRUE
 CscFeature_LockScreen_ConfigCarrierTextPolicy=DisplayUsimText,DisplayPlmnAtBottom
 CscFeature_Message_EnableReplyAll=TRUE
 CscFeature_Message_EnableSpeedDial=TRUE
-CscFeature_NFC_ConfigAdvancedSettings=enable
-CscFeature_NFC_ConfigCardmodeRoutingTypeForHce=ROUTE_ON_WHEN_SCREEN_ON
-CscFeature_NFC_ConfigDynamicFirmwareLoading=KOO
-CscFeature_NFC_ConfigReaderModeUI=KOREA
 CscFeature_NFC_DefStatus=OFF
-CscFeature_NFC_StatusBarIconType=DEFAULT
 CscFeature_RIL_USIMPersonalizationKOR=TRUE
 CscFeature_Setting_DisableIsraelCountry=TRUE
 CscFeature_Setting_EnableHwVersionDisplay=TRUE
@@ -130,3 +124,19 @@ CscFeature_Wifi_SupportAdvancedMenu=TRUE
 GET_DECODER_JAR
 DECODE_XMLS
 MODIFY_XMLS
+
+echo "Patching APKs for network speed monitoring..."
+
+DECODE_APK "system/priv-app/SecSettings/SecSettings.apk"
+DECODE_APK "system_ext/priv-app/SystemUI/SystemUI.apk"
+
+FTP="
+system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/eternal/provider/items/NotificationsItem.smali
+system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/notification/ConfigureNotificationMoreSettings\$1.smali
+system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/notification/StatusBarNetworkSpeedController.smali
+system_ext/priv-app/SystemUI/SystemUI.apk/smali/com/android/systemui/Rune.smali
+system_ext/priv-app/SystemUI/SystemUI.apk/smali/com/android/systemui/QpRune.smali
+"
+for f in $FTP; do
+    sed -i "s/CscFeature_Common_SupportZProjectFunctionInGlobal/CscFeature_Setting_SupportRealTimeNetworkSpeed/g" "$APKTOOL_DIR/$f"
+done
