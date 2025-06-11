@@ -21,7 +21,7 @@ index f6984e555..4abfc97e7 100644
  
 -    :try_start_0
 -    invoke-static {}, Lcom/samsung/android/knox/EdmUtils;->getAPILevelForInternal()I
-+    invoke-static {}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->onEDMGetAPILevelHook()I
++    invoke-static {}, Lio/mesalabs/unica/SamsungPropsHooks;->onEDMGetAPILevelHook()I
  
      move-result v0
 -    :try_end_0
@@ -46,4 +46,3 @@ index f6984e555..4abfc97e7 100644
  .end method
 -- 
 2.43.0
-

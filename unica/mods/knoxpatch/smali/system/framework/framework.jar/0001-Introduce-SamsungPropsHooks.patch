@@ -1,48 +1,47 @@
-From 4b1db866ad0ac04aa77c50c5a0c181ede497fb86 Mon Sep 17 00:00:00 2001
-From: Ocin4ever <85343782+Ocin4ever@users.noreply.github.com>
-Date: Sat, 31 May 2025 22:25:53 +0200
+From b2eb1a6fe1953d7993d94dba3ea4405d5db4ade2 Mon Sep 17 00:00:00 2001
+From: Salvo Giangreco <giangrecosalvo9@gmail.com>
+Date: Wed, 4 Jun 2025 18:45:51 +0300
 Subject: [PATCH] Introduce SamsungPropsHooks
 
-Co-Authored-By: Salvo Giangreco <giangrecosalvo9@gmail.com>
+Co-Authored-By: Atakan <ata.kaner03@gmail.com>
 ---
- .../smali/android/app/Instrumentation.smali   |   4 +
+ smali/android/app/Instrumentation.smali       |   4 +
  .../android/os/SystemProperties.smali         |  14 +
- .../android/provider/Settings$Global.smali    |   9 +
- .../ocin4ever/spoof/SamsungPropsHooks.smali   | 820 ++++++++++++++++++
- 4 files changed, 847 insertions(+)
- create mode 100644 smali_classes6/com/ocin4ever/spoof/SamsungPropsHooks.smali
+ .../io/mesalabs/unica/SamsungPropsHooks.smali | 512 ++++++++++++++++++
+ 3 files changed, 530 insertions(+)
+ create mode 100644 smali_classes6/io/mesalabs/unica/SamsungPropsHooks.smali
 
 diff --git a/smali/android/app/Instrumentation.smali b/smali/android/app/Instrumentation.smali
-index 6c24fd2ee..1c4956360 100644
+index 0d935feb..3cd0312c 100644
 --- a/smali/android/app/Instrumentation.smali
 +++ b/smali/android/app/Instrumentation.smali
-@@ -788,6 +788,8 @@
+@@ -780,6 +780,8 @@
  
      invoke-virtual {v0, p1}, Landroid/app/Application;->attach(Landroid/content/Context;)V
  
-+    invoke-static {p1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->init(Landroid/content/Context;)V
++    invoke-static {p1}, Lio/mesalabs/unica/SamsungPropsHooks;->init(Landroid/content/Context;)V
 +
      return-object v0
  .end method
  
-@@ -4927,6 +4929,8 @@
+@@ -4784,6 +4786,8 @@
  
      invoke-virtual {v0, p3}, Landroid/app/Application;->attach(Landroid/content/Context;)V
  
-+    invoke-static {p3}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->init(Landroid/content/Context;)V
++    invoke-static {p3}, Lio/mesalabs/unica/SamsungPropsHooks;->init(Landroid/content/Context;)V
 +
      return-object v0
  .end method
  
 diff --git a/smali_classes3/android/os/SystemProperties.smali b/smali_classes3/android/os/SystemProperties.smali
-index 63e0dd64c..6204c0ab3 100644
+index 645f7902..43361758 100644
 --- a/smali_classes3/android/os/SystemProperties.smali
 +++ b/smali_classes3/android/os/SystemProperties.smali
 @@ -383,10 +383,17 @@
      .annotation runtime Landroid/annotation/SystemApi;
      .end annotation
  
-+    invoke-static {p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->onSPGetHook(Ljava/lang/String;)Ljava/lang/String;
++    invoke-static {p0}, Lio/mesalabs/unica/SamsungPropsHooks;->onSPGetHook(Ljava/lang/String;)Ljava/lang/String;
 +
 +    move-result-object v0
 +
@@ -60,7 +59,7 @@ index 63e0dd64c..6204c0ab3 100644
      .annotation runtime Landroid/annotation/SystemApi;
      .end annotation
  
-+    invoke-static {p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->onSPGetHook(Ljava/lang/String;)Ljava/lang/String;
++    invoke-static {p0}, Lio/mesalabs/unica/SamsungPropsHooks;->onSPGetHook(Ljava/lang/String;)Ljava/lang/String;
 +
 +    move-result-object v0
 +
@@ -74,61 +73,37 @@ index 63e0dd64c..6204c0ab3 100644
      return-object v0
  .end method
  
-diff --git a/smali_classes3/android/provider/Settings$Global.smali b/smali_classes3/android/provider/Settings$Global.smali
-index c4aaccbb3..65c8e9368 100644
---- a/smali_classes3/android/provider/Settings$Global.smali
-+++ b/smali_classes3/android/provider/Settings$Global.smali
-@@ -4482,6 +4482,15 @@
-     return-object v0
- 
-     :cond_1
-+    invoke-static {p0, p1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->onSGGetStringHook(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;
-+
-+    move-result-object v0
-+
-+    if-eqz v0, :cond_2
-+
-+    return-object v0
-+
-+    :cond_2
-     sget-object v0, Landroid/provider/Settings$Global;->sNameValueCache:Landroid/provider/Settings$NameValueCache;
- 
-     invoke-virtual {v0, p0, p1, p2}, Landroid/provider/Settings$NameValueCache;->getStringForUser(Landroid/content/ContentResolver;Ljava/lang/String;I)Ljava/lang/String;
-diff --git a/smali_classes6/com/ocin4ever/spoof/SamsungPropsHooks.smali b/smali_classes6/com/ocin4ever/spoof/SamsungPropsHooks.smali
+diff --git a/smali_classes6/io/mesalabs/unica/SamsungPropsHooks.smali b/smali_classes6/io/mesalabs/unica/SamsungPropsHooks.smali
 new file mode 100644
-index 000000000..ac60ec228
+index 00000000..f292248a
 --- /dev/null
-+++ b/smali_classes6/com/ocin4ever/spoof/SamsungPropsHooks.smali
-@@ -0,0 +1,820 @@
-+.class public final Lcom/ocin4ever/spoof/SamsungPropsHooks;
++++ b/smali_classes6/io/mesalabs/unica/SamsungPropsHooks.smali
+@@ -0,0 +1,512 @@
++.class public final Lio/mesalabs/unica/SamsungPropsHooks;
 +.super Ljava/lang/Object;
 +.source "SamsungPropsHooks.java"
 +
 +
 +# static fields
++.field private static final AUTO_BLOCKER_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.rampart"
++
++.field private static final CAMERA_PACKAGE_NAME:Ljava/lang/String; = "com.sec.android.app.camera"
++
 +.field private static final DEBUG:Z = false
 +
-+.field private static final PACKAGE_ACCESSIBILITY:Ljava/lang/String; = "com.samsung.accessibility"
++.field private static final FIND_MY_MOBILE_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.fmm"
 +
-+.field private static final PACKAGE_DEVICE_SECURITY:Ljava/lang/String; = "com.samsung.android.sm.devicesecurity.tcm"
++.field private static final FM_RADIO_PACKAGE_NAME:Ljava/lang/String; = "com.sec.android.app.fm"
 +
-+.field private static final PACKAGE_FIND_MY_MOBILE:Ljava/lang/String; = "com.samsung.android.fmm"
++.field private static final ROUTINES_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.app.routines"
 +
-+.field private static final PACKAGE_GALAXYRAW:Ljava/lang/String; = "com.samsung.android.app.galaxyraw"
++.field private static final SAMSUNG_CLOUD_PLATFORM_MANAGER_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.scpm"
 +
-+.field private static final PACKAGE_NETFLIX:Ljava/lang/String; = "com.netflix.mediaclient"
++.field private static final SAMSUNG_HEALTH_PACKAGE_NAME:Ljava/lang/String; = "com.sec.android.app.shealth"
 +
-+.field private static final PACKAGE_ROUTINES:Ljava/lang/String; = "com.samsung.android.app.routines"
++.field private static final SAMSUNG_TV_PLUS_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.tvplus"
 +
-+.field private static final PACKAGE_SCPM:Ljava/lang/String; = "com.samsung.android.scpm"
-+
-+.field private static final PACKAGE_SHEALTH:Ljava/lang/String; = "com.sec.android.app.shealth"
-+
-+.field private static final PACKAGE_SMART_VIEW:Ljava/lang/String; = "com.samsung.android.smartmirroring"
-+
-+.field private static final PACKAGE_SM_CN:Ljava/lang/String; = "com.samsung.android.sm_cn"
-+
-+.field private static final PACKAGE_TVPLUS:Ljava/lang/String; = "com.samsung.android.tvplus"
++.field private static final SMART_VIEW_PACKAGE_NAME:Ljava/lang/String; = "com.samsung.android.smartmirroring"
 +
 +.field private static final TAG:Ljava/lang/String; = "SamsungPropsHooks"
 +
@@ -136,19 +111,13 @@ index 000000000..ac60ec228
 +
 +.field private static volatile sPackageName:Ljava/lang/String;
 +
-+.field private static volatile sSpoofAccessibility:Z
++.field private static volatile sSpoofBootStateProp:Z
 +
 +.field private static volatile sSpoofBuildTypeProp:Z
-+
-+.field private static volatile sSpoofChina:Z
 +
 +.field private static volatile sSpoofCountryCode:Ljava/lang/String;
 +
 +.field private static volatile sSpoofKeystoreProp:Z
-+
-+.field private static volatile sSpoofProductName:Z
-+
-+.field private static volatile sSpoofRoutines:Z
 +
 +
 +# direct methods
@@ -160,14 +129,14 @@ index 000000000..ac60ec228
 +    return-void
 +.end method
 +
-+.method private static dlog(Ljava/lang/String;)V
++.method public static dlog(Ljava/lang/String;)V
 +    .locals 0
 +
 +    return-void
 +.end method
 +
 +.method public static init(Landroid/content/Context;)V
-+    .locals 5
++    .locals 6
 +
 +    invoke-virtual {p0}, Landroid/content/Context;->getPackageName()Ljava/lang/String;
 +
@@ -179,641 +148,370 @@ index 000000000..ac60ec228
 +
 +    if-eqz v1, :cond_0
 +
-+    goto/16 :goto_8
++    return-void
 +
 +    :cond_0
-+    sput-object v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    sput-object v0, Lio/mesalabs/unica/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
 +
-+    const/4 v0, 0x1
++    const/4 v1, 0x1
 +
-+    const/4 v1, 0x0
++    const/4 v2, 0x0
 +
 +    :try_start_0
 +    invoke-virtual {p0}, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
 +
-+    move-result-object p0
++    move-result-object v3
 +
-+    sget-object v2, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    invoke-virtual {v3, v0, v2}, Landroid/content/pm/PackageManager;->getApplicationInfo(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;
 +
-+    invoke-virtual {p0, v2, v1}, Landroid/content/pm/PackageManager;->getApplicationInfo(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;
++    move-result-object v3
 +
-+    move-result-object p0
++    const/16 v4, 0x81
 +
-+    iget p0, p0, Landroid/content/pm/ApplicationInfo;->flags:I
++    iget v5, v3, Landroid/content/pm/ApplicationInfo;->flags:I
 +
-+    and-int/lit16 p0, p0, 0x81
++    and-int/lit16 v5, v5, 0x81
 +
-+    if-nez p0, :cond_1
++    if-nez v5, :cond_1
 +
-+    move p0, v0
++    move v5, v1
 +
 +    goto :goto_0
 +
 +    :cond_1
-+    move p0, v1
++    move v5, v2
 +
 +    :goto_0
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sIsUserApp:Z
++    sput-boolean v5, Lio/mesalabs/unica/SamsungPropsHooks;->sIsUserApp:Z
 +    :try_end_0
 +    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 +
 +    goto :goto_1
 +
 +    :catch_0
-+    move-exception p0
++    move-exception v3
 +
-+    new-instance v2, Ljava/lang/StringBuilder;
++    new-instance v4, Ljava/lang/StringBuilder;
 +
-+    const-string v3, "sIsUserApp = false; "
++    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
 +
-+    invoke-direct {v2, v3}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++    const-string v5, "sIsUserApp = false; "
 +
-+    invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
++    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v4
 +
-+    invoke-virtual {p0}, Ljava/lang/Class;->getName()Ljava/lang/String;
++    invoke-virtual {v3}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 +
-+    move-result-object p0
++    move-result-object v5
 +
-+    invoke-virtual {v2, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++    invoke-virtual {v5}, Ljava/lang/Class;->getName()Ljava/lang/String;
 +
-+    move-result-object p0
++    move-result-object v5
 +
-+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v4
 +
-+    invoke-static {p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
++    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 +
-+    sput-boolean v1, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sIsUserApp:Z
++    move-result-object v4
++
++    invoke-static {v4}, Lio/mesalabs/unica/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
++
++    sput-boolean v2, Lio/mesalabs/unica/SamsungPropsHooks;->sIsUserApp:Z
 +
 +    :goto_1
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    const-string v3, "com.samsung.android.rampart"
 +
-+    const-string v2, "com.samsung.android.app.galaxyraw"
++    invoke-virtual {v0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    invoke-virtual {p0, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    move-result v3
 +
-+    move-result p0
-+
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofProductName:Z
-+
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
-+
-+    const-string v2, "com.samsung.accessibility"
-+
-+    invoke-virtual {p0, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result p0
-+
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofAccessibility:Z
-+
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    sput-boolean v3, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofBootStateProp:Z
 +
 +    const-string v3, "com.samsung.android.scpm"
 +
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    invoke-virtual {v0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    move-result p0
++    move-result v3
 +
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofBuildTypeProp:Z
++    sput-boolean v3, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofBuildTypeProp:Z
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    const-string v3, "com.sec.android.app.shealth"
 +
-+    const-string v3, "com.samsung.android.app.routines"
++    invoke-virtual {v0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    move-result v3
 +
-+    move-result p0
++    if-nez v3, :cond_3
 +
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofRoutines:Z
++    const-string v3, "com.samsung.android.tvplus"
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    invoke-virtual {v0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    const-string v3, "com.samsung.android.sm_cn"
++    move-result v3
 +
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    if-nez v3, :cond_3
 +
-+    move-result p0
++    const-string v3, "com.samsung.android.fmm"
 +
-+    if-nez p0, :cond_3
++    invoke-virtual {v0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    move-result v3
 +
-+    const-string v3, "com.samsung.android.sm.devicesecurity.tcm"
-+
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result p0
-+
-+    if-eqz p0, :cond_2
++    if-eqz v3, :cond_2
 +
 +    goto :goto_2
 +
 +    :cond_2
-+    move p0, v1
++    move v1, v2
 +
 +    goto :goto_3
 +
 +    :cond_3
 +    :goto_2
-+    move p0, v0
++    nop
 +
 +    :goto_3
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofChina:Z
++    sput-boolean v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofKeystoreProp:Z
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    const-string v1, "com.sec.android.app.camera"
 +
-+    const-string v3, "com.sec.android.app.shealth"
++    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    move-result v1
 +
-+    move-result p0
++    if-eqz v1, :cond_4
 +
-+    if-nez p0, :cond_5
++    const-string v1, "USA"
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
-+
-+    const-string v3, "com.samsung.android.tvplus"
-+
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result p0
-+
-+    if-nez p0, :cond_5
-+
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
-+
-+    const-string v3, "com.samsung.android.fmm"
-+
-+    invoke-virtual {p0, v3}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result p0
-+
-+    if-eqz p0, :cond_4
++    sput-object v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofCountryCode:Ljava/lang/String;
 +
 +    goto :goto_4
 +
 +    :cond_4
-+    move p0, v1
++    const-string v1, "com.samsung.android.app.routines"
 +
-+    goto :goto_5
++    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v1
++
++    if-eqz v1, :cond_5
++
++    const-string v1, "CHINA"
++
++    sput-object v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofCountryCode:Ljava/lang/String;
 +
 +    :cond_5
 +    :goto_4
-+    move p0, v0
++    const-string v1, "com.samsung.android.smartmirroring"
 +
-+    :goto_5
-+    sput-boolean p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofKeystoreProp:Z
++    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
++    move-result v1
 +
-+    invoke-virtual {p0}, Ljava/lang/String;->hashCode()I
++    if-eqz v1, :cond_6
 +
-+    invoke-virtual {p0}, Ljava/lang/String;->hashCode()I
++    const-string v1, "TYPE"
 +
-+    move-result v3
++    const-string v2, "userdebug"
 +
-+    const/4 v4, -0x1
++    invoke-static {v1, v2}, Lio/mesalabs/unica/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
 +
-+    sparse-switch v3, :sswitch_data_0
-+
-+    :goto_6
-+    move v0, v4
-+
-+    goto :goto_7
-+
-+    :sswitch_0
-+    const-string v0, "com.netflix.mediaclient"
-+
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result p0
-+
-+    if-nez p0, :cond_6
-+
-+    goto :goto_6
++    goto :goto_5
 +
 +    :cond_6
-+    const/4 v0, 0x2
++    sget-boolean v1, Lio/mesalabs/unica/SamsungPropsHooks;->sIsUserApp:Z
 +
-+    goto :goto_7
++    if-eqz v1, :cond_7
 +
-+    :sswitch_1
-+    invoke-virtual {p0, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    const-string v1, "com.sec"
 +
-+    move-result p0
++    invoke-virtual {v0, v1}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
 +
-+    if-nez p0, :cond_8
++    move-result v1
 +
-+    goto :goto_6
++    if-nez v1, :cond_7
 +
-+    :sswitch_2
-+    const-string v0, "com.samsung.android.smartmirroring"
++    const-string v1, "com.samsung"
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    invoke-virtual {v0, v1}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
 +
-+    move-result p0
++    move-result v1
 +
-+    if-nez p0, :cond_7
++    if-nez v1, :cond_7
 +
-+    goto :goto_6
++    nop
++
++    const-string v1, "ro.boot.em.model"
++
++    const-string v2, "SM-G990B2"
++
++    invoke-static {v1, v2}, Landroid/os/SystemProperties;->get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
++
++    move-result-object v1
++
++    const-string v2, "MODEL"
++
++    invoke-static {v2, v1}, Lio/mesalabs/unica/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
 +
 +    :cond_7
-+    move v0, v1
-+
-+    :cond_8
-+    :goto_7
-+    packed-switch v0, :pswitch_data_0
-+
-+    sget-object p0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sPackageName:Ljava/lang/String;
-+
-+    invoke-static {p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->isSamsungSystemApp(Ljava/lang/String;)Z
-+
-+    move-result p0
-+
-+    if-eqz p0, :cond_9
-+
-+    :goto_8
++    :goto_5
 +    return-void
-+
-+    :cond_9
-+    const-string p0, "ro.boot.em.model"
-+
-+    const-string v0, "SM-S938B"
-+
-+    invoke-static {p0, v0}, Landroid/os/SemSystemProperties;->get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-+
-+    move-result-object p0
-+
-+    const-string v0, "MODEL"
-+
-+    invoke-static {v0, p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    return-void
-+
-+    :pswitch_0
-+    invoke-static {}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->spoofAsPixel6Pro()V
-+
-+    return-void
-+
-+    :pswitch_1
-+    const-string p0, "NAME"
-+
-+    const-string v0, "e2sxxx"
-+
-+    invoke-static {p0, v0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    return-void
-+
-+    :pswitch_2
-+    const-string p0, "TYPE"
-+
-+    const-string v0, "userdebug"
-+
-+    invoke-static {p0, v0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    return-void
-+
-+    :sswitch_data_0
-+    .sparse-switch
-+        -0x6963b406 -> :sswitch_2
-+        -0x12a53e53 -> :sswitch_1
-+        0x1dd9a466 -> :sswitch_0
-+    .end sparse-switch
-+
-+    :pswitch_data_0
-+    .packed-switch 0x0
-+        :pswitch_2
-+        :pswitch_1
-+        :pswitch_0
-+    .end packed-switch
-+.end method
-+
-+.method private static isSamsungSystemApp(Ljava/lang/String;)Z
-+    .locals 1
-+
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sIsUserApp:Z
-+
-+    if-eqz v0, :cond_1
-+
-+    const-string v0, "com.sec"
-+
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
-+
-+    move-result v0
-+
-+    if-nez v0, :cond_1
-+
-+    const-string v0, "com.samsung"
-+
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
-+
-+    move-result p0
-+
-+    if-eqz p0, :cond_0
-+
-+    goto :goto_0
-+
-+    :cond_0
-+    const/4 p0, 0x0
-+
-+    return p0
-+
-+    :cond_1
-+    :goto_0
-+    const/4 p0, 0x1
-+
-+    return p0
 +.end method
 +
 +.method public static onEDMGetAPILevelHook()I
 +    .locals 1
 +
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sIsUserApp:Z
++    sget-boolean v0, Lio/mesalabs/unica/SamsungPropsHooks;->sIsUserApp:Z
 +
 +    if-nez v0, :cond_0
 +
-+    const/16 v0, 0x26
++    const-string v0, "38"
++
++    invoke-static {v0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
++
++    move-result v0
 +
 +    return v0
 +
 +    :cond_0
 +    const-string v0, "Spoofing EnterpriseDeviceManager.getAPILevel()"
 +
-+    invoke-static {v0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
++    invoke-static {v0}, Lio/mesalabs/unica/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
 +
 +    const/4 v0, -0x1
 +
 +    return v0
 +.end method
 +
-+.method public static onSGGetStringHook(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;
-+    .locals 2
-+
-+    const-string v0, "adb_enabled"
-+
-+    invoke-virtual {p1, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result v0
-+
-+    if-nez v0, :cond_0
-+
-+    const-string v0, "development_settings_enabled"
-+
-+    invoke-virtual {p1, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result v0
-+
-+    if-eqz v0, :cond_1
-+
-+    :cond_0
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sIsUserApp:Z
-+
-+    if-eqz v0, :cond_1
-+
-+    const-string v0, "unica_hide_dev"
-+
-+    const/4 v1, 0x1
-+
-+    invoke-static {p0, v0, v1}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
-+
-+    move-result p0
-+
-+    xor-int/2addr p0, v1
-+
-+    invoke-static {p0}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
-+
-+    move-result-object p0
-+
-+    new-instance v0, Ljava/lang/StringBuilder;
-+
-+    const-string v1, "Spoofing \""
-+
-+    invoke-direct {v0, v1}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
-+
-+    invoke-virtual {v0, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    move-result-object p1
-+
-+    const-string v0, "\" to \""
-+
-+    invoke-virtual {p1, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    move-result-object p1
-+
-+    invoke-virtual {p1, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    move-result-object p1
-+
-+    const-string v0, "\""
-+
-+    invoke-virtual {p1, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-+
-+    move-result-object p1
-+
-+    invoke-virtual {p1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-+
-+    move-result-object p1
-+
-+    invoke-static {p1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
-+
-+    return-object p0
-+
-+    :cond_1
-+    const/4 p0, 0x0
-+
-+    return-object p0
-+.end method
-+
 +.method public static onSPGetHook(Ljava/lang/String;)Ljava/lang/String;
 +    .locals 3
 +
-+    invoke-virtual {p0}, Ljava/lang/String;->hashCode()I
++    const/4 v0, 0x0
 +
-+    invoke-virtual {p0}, Ljava/lang/String;->hashCode()I
++    const-string v1, "ro.boot.verifiedbootstate"
 +
-+    move-result v0
++    invoke-virtual {p0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    const/4 v1, -0x1
++    move-result v1
 +
-+    sparse-switch v0, :sswitch_data_0
++    if-eqz v1, :cond_0
 +
-+    goto :goto_0
++    sget-boolean v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofBootStateProp:Z
 +
-+    :sswitch_0
-+    const-string v0, "ro.surface_flinger.protected_contents"
++    if-eqz v1, :cond_3
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-+
-+    move-result v0
-+
-+    if-nez v0, :cond_0
++    const-string v0, "green"
 +
 +    goto :goto_0
 +
 +    :cond_0
-+    const/4 v1, 0x3
++    const-string v1, "ro.build.type"
 +
-+    goto :goto_0
++    invoke-virtual {p0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    :sswitch_1
-+    const-string v0, "ro.build.type"
++    move-result v1
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    if-eqz v1, :cond_1
 +
-+    move-result v0
++    sget-boolean v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofBuildTypeProp:Z
 +
-+    if-nez v0, :cond_1
++    if-eqz v1, :cond_3
++
++    const-string v0, "eng"
 +
 +    goto :goto_0
 +
 +    :cond_1
-+    const/4 v1, 0x2
++    const-string v1, "ro.csc.country_code"
 +
-+    goto :goto_0
++    invoke-virtual {p0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    :sswitch_2
-+    const-string v0, "ro.security.keystore.keytype"
++    move-result v1
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    if-eqz v1, :cond_2
 +
-+    move-result v0
++    sget-object v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofCountryCode:Ljava/lang/String;
 +
-+    if-nez v0, :cond_2
++    if-eqz v1, :cond_3
++
++    sget-object v0, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofCountryCode:Ljava/lang/String;
 +
 +    goto :goto_0
 +
 +    :cond_2
-+    const/4 v1, 0x1
++    const-string v1, "ro.security.keystore.keytype"
 +
-+    goto :goto_0
++    invoke-virtual {p0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 +
-+    :sswitch_3
-+    const-string v0, "ro.product.product.name"
++    move-result v1
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++    if-eqz v1, :cond_3
 +
-+    move-result v0
++    sget-boolean v1, Lio/mesalabs/unica/SamsungPropsHooks;->sSpoofKeystoreProp:Z
 +
-+    if-nez v0, :cond_3
-+
-+    goto :goto_0
-+
-+    :cond_3
-+    const/4 v1, 0x0
-+
-+    :goto_0
-+    packed-switch v1, :pswitch_data_0
-+
-+    goto :goto_1
-+
-+    :pswitch_0
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofAccessibility:Z
-+
-+    if-eqz v0, :cond_4
-+
-+    const-string v0, "1"
-+
-+    goto :goto_2
-+
-+    :pswitch_1
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofBuildTypeProp:Z
-+
-+    if-eqz v0, :cond_4
-+
-+    const-string v0, "eng"
-+
-+    goto :goto_2
-+
-+    :pswitch_2
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofKeystoreProp:Z
-+
-+    if-eqz v0, :cond_4
++    if-eqz v1, :cond_3
 +
 +    const-string v0, ""
 +
-+    goto :goto_2
-+
-+    :pswitch_3
-+    sget-boolean v0, Lcom/ocin4ever/spoof/SamsungPropsHooks;->sSpoofProductName:Z
-+
++    :cond_3
++    :goto_0
 +    if-eqz v0, :cond_4
-+
-+    const-string v0, "p3sxxx"
-+
-+    goto :goto_2
-+
-+    :cond_4
-+    :goto_1
-+    const/4 v0, 0x0
-+
-+    :goto_2
-+    if-eqz v0, :cond_5
 +
 +    new-instance v1, Ljava/lang/StringBuilder;
 +
++    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
++
 +    const-string v2, "Spoofing \""
 +
-+    invoke-direct {v1, v2}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++
++    move-result-object v1
 +
 +    invoke-virtual {v1, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v1
 +
-+    const-string v1, "\" prop to \""
++    const-string v2, "\" prop to \""
 +
-+    invoke-virtual {p0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v1
 +
-+    invoke-virtual {p0, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++    invoke-virtual {v1, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v1
 +
-+    const-string v1, "\""
++    const-string v2, "\""
 +
-+    invoke-virtual {p0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    move-result-object p0
++    move-result-object v1
 +
-+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 +
-+    move-result-object p0
++    move-result-object v1
 +
-+    invoke-static {p0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
++    invoke-static {v1}, Lio/mesalabs/unica/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
 +
-+    :cond_5
++    :cond_4
 +    return-object v0
-+
-+    nop
-+
-+    :sswitch_data_0
-+    .sparse-switch
-+        -0x6ed5fa26 -> :sswitch_3
-+        0xc90c28a -> :sswitch_2
-+        0x2ebb8f0b -> :sswitch_1
-+        0x602047b3 -> :sswitch_0
-+    .end sparse-switch
-+
-+    :pswitch_data_0
-+    .packed-switch 0x0
-+        :pswitch_3
-+        :pswitch_2
-+        :pswitch_1
-+        :pswitch_0
-+    .end packed-switch
 +.end method
 +
 +.method private static setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+    .locals 2
++    .locals 3
 +
 +    new-instance v0, Ljava/lang/StringBuilder;
 +
++    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
++
 +    const-string v1, "Spoofing Build."
 +
-+    invoke-direct {v0, v1}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++
++    move-result-object v0
 +
 +    invoke-virtual {v0, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
@@ -839,7 +537,7 @@ index 000000000..ac60ec228
 +
 +    move-result-object v0
 +
-+    invoke-static {v0}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
++    invoke-static {v0}, Lio/mesalabs/unica/SamsungPropsHooks;->dlog(Ljava/lang/String;)V
 +
 +    :try_start_0
 +    const-class v0, Landroid/os/Build;
@@ -856,70 +554,43 @@ index 000000000..ac60ec228
 +
 +    invoke-virtual {v0, v1, p1}, Ljava/lang/reflect/Field;->set(Ljava/lang/Object;Ljava/lang/Object;)V
 +
-+    const/4 p1, 0x0
++    const/4 v1, 0x0
 +
-+    invoke-virtual {v0, p1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
++    invoke-virtual {v0, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
 +    :try_end_0
 +    .catch Ljava/lang/NoSuchFieldException; {:try_start_0 .. :try_end_0} :catch_0
 +    .catch Ljava/lang/IllegalAccessException; {:try_start_0 .. :try_end_0} :catch_0
 +
-+    return-void
++    goto :goto_0
 +
 +    :catch_0
-+    new-instance p1, Ljava/lang/StringBuilder;
++    move-exception v0
 +
-+    const-string v0, "Could not spoof Build."
++    new-instance v1, Ljava/lang/StringBuilder;
 +
-+    invoke-direct {p1, v0}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
 +
-+    invoke-virtual {p1, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
++    const-string v2, "Failed to spoof Build."
 +
-+    move-result-object p0
++    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    invoke-virtual {p0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++    move-result-object v1
 +
-+    move-result-object p0
++    invoke-virtual {v1, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 +
-+    const-string p1, "SamsungPropsHooks"
++    move-result-object v1
 +
-+    invoke-static {p1, p0}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
++    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 +
-+    return-void
-+.end method
++    move-result-object v1
 +
-+.method private static spoofAsPixel6Pro()V
-+    .locals 2
++    const-string v2, "SamsungPropsHooks"
 +
-+    const-string v0, "BRAND"
++    invoke-static {v2, v1, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
 +
-+    const-string v1, "google"
-+
-+    invoke-static {v0, v1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    const-string v0, "MANUFACTURER"
-+
-+    const-string v1, "Google"
-+
-+    invoke-static {v0, v1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    const-string v0, "DEVICE"
-+
-+    const-string v1, "raven"
-+
-+    invoke-static {v0, v1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    const-string v0, "PRODUCT"
-+
-+    invoke-static {v0, v1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
-+    const-string v0, "MODEL"
-+
-+    const-string v1, "Pixel 6 Pro"
-+
-+    invoke-static {v0, v1}, Lcom/ocin4ever/spoof/SamsungPropsHooks;->setBuildField(Ljava/lang/String;Ljava/lang/String;)V
-+
++    :goto_0
 +    return-void
 +.end method
 -- 
-2.39.5 (Apple Git-154)
+2.43.0
 
