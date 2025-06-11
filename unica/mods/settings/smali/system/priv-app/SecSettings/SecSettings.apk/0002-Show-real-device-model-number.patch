@@ -1,25 +1,26 @@
-From 14cf0db648f5c8575ac567a16b16862e45336a98 Mon Sep 17 00:00:00 2001
+From 70d0b1cb228f6ca2a469f0ac176fea01d447e0de Mon Sep 17 00:00:00 2001
 From: BlackMesa123 <giangrecosalvo9@gmail.com>
 Date: Fri, 7 Jun 2024 08:15:21 +0200
 Subject: [PATCH] Show real device model number
 
+Signed-off-by: utkustnr <utkuustuner@proton.me>
 ---
  .../settings/deviceinfo/aboutphone/ModelNameGetter.smali        | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/smali_classes4/com/samsung/android/settings/deviceinfo/aboutphone/ModelNameGetter.smali b/smali_classes4/com/samsung/android/settings/deviceinfo/aboutphone/ModelNameGetter.smali
-index cacdfe70..85627e35 100644
+index 0ec61ab1..97832ce3 100644
 --- a/smali_classes4/com/samsung/android/settings/deviceinfo/aboutphone/ModelNameGetter.smali
 +++ b/smali_classes4/com/samsung/android/settings/deviceinfo/aboutphone/ModelNameGetter.smali
-@@ -52,7 +52,7 @@
+@@ -48,7 +48,7 @@
  
      invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
  
--    const-string/jumbo v1, "ro.product.model"
-+    const-string/jumbo v1, "ro.boot.em.model"
+-    const-string/jumbo v2, "ro.product.model"
++    const-string/jumbo v2, "ro.boot.em.model"
  
-     invoke-static {v1}, Landroid/os/SystemProperties;->get(Ljava/lang/String;)Ljava/lang/String;
+     invoke-static {v2}, Landroid/os/SystemProperties;->get(Ljava/lang/String;)Ljava/lang/String;
  
 -- 
-2.46.0
+2.49.0
 

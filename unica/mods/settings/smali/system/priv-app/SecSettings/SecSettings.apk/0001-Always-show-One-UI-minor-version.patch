@@ -1,35 +1,26 @@
-From 3e6b99dec00bdd49fd6db3e56bb5d67230d6cfc2 Mon Sep 17 00:00:00 2001
+From c5ee0a0d42767ce98845a1c6f7b3a9501659742d Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
 Date: Fri, 13 Sep 2024 01:21:44 +0200
 Subject: [PATCH] Always show One UI minor version
 
+Signed-off-by: utkustnr <utkuustuner@proton.me>
 ---
- .../OneUIVersionPreferenceController.smali             | 10 ----------
- 1 file changed, 10 deletions(-)
+ .../softwareinfo/OneUIVersionPreferenceController.smali         | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/smali_classes4/com/samsung/android/settings/deviceinfo/softwareinfo/OneUIVersionPreferenceController.smali b/smali_classes4/com/samsung/android/settings/deviceinfo/softwareinfo/OneUIVersionPreferenceController.smali
-index b88774a3..5929ea08 100644
+index 5b11a796..b5fa072e 100644
 --- a/smali_classes4/com/samsung/android/settings/deviceinfo/softwareinfo/OneUIVersionPreferenceController.smali
 +++ b/smali_classes4/com/samsung/android/settings/deviceinfo/softwareinfo/OneUIVersionPreferenceController.smali
-@@ -293,18 +293,8 @@
+@@ -285,7 +285,7 @@
  
      invoke-static {}, Lcom/android/settings/Utils;->isTablet()Z
  
 -    move-result p0
--
--    if-nez p0, :cond_0
--
--    const/4 p0, 0x0
--
--    goto :goto_0
--
--    :cond_0
-     const/4 p0, 0x1
++    const/4 p0, 0x1
  
--    :goto_0
      return p0
  .end method
- 
 -- 
-2.46.1
+2.49.0
 

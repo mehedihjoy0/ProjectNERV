@@ -1,0 +1,26 @@
+From 63a117f9bd012d718d81fb182acf0a3aaf651837 Mon Sep 17 00:00:00 2001
+From: Salvo Giangreco <giangrecosalvo9@gmail.com>
+Date: Wed, 28 Aug 2024 19:19:15 +0200
+Subject: [PATCH] Set auto confirm PIN min digits to 4
+
+Signed-off-by: utkustnr <utkuustuner@proton.me>
+---
+ .../android/server/locksettings/SyntheticPasswordManager.smali  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/smali/com/android/server/locksettings/SyntheticPasswordManager.smali b/smali/com/android/server/locksettings/SyntheticPasswordManager.smali
+index 44c78338..91ddc748 100644
+--- a/smali/com/android/server/locksettings/SyntheticPasswordManager.smali
++++ b/smali/com/android/server/locksettings/SyntheticPasswordManager.smali
+@@ -689,7 +689,7 @@
+ 
+     if-eqz v9, :cond_0
+ 
+-    const/4 v9, 0x6
++    const/4 v9, 0x4
+ 
+     if-ge v5, v9, :cond_1
+ 
+-- 
+2.49.0
+
