@@ -270,8 +270,6 @@ GENERATE_UPDATER_SCRIPT()
     local HAS_VENDOR_DLKM=false
     local HAS_ODM_DLKM=false
     local HAS_SYSTEM_DLKM=false
-    local HAS_OPTICS=false
-    local HAS_PRISM=false
     local HAS_POST_INSTALL=false
 
     [ -f "$TMP_DIR/boot.img" ] && HAS_BOOT=true
@@ -287,8 +285,6 @@ GENERATE_UPDATER_SCRIPT()
     [ -f "$TMP_DIR/vendor_dlkm.new.dat${BROTLI_EXTENSION}" ] && HAS_VENDOR_DLKM=true && PARTITION_COUNT=$((PARTITION_COUNT + 1))
     [ -f "$TMP_DIR/odm_dlkm.new.dat${BROTLI_EXTENSION}" ] && HAS_ODM_DLKM=true && PARTITION_COUNT=$((PARTITION_COUNT + 1))
     [ -f "$TMP_DIR/system_dlkm.new.dat${BROTLI_EXTENSION}" ] && HAS_SYSTEM_DLKM=true && PARTITION_COUNT=$((PARTITION_COUNT + 1))
-    [ -f "$TMP_DIR/optics.new.dat${BROTLI_EXTENSION}" ] && HAS_OPTICS=true
-    [ -f "$TMP_DIR/prism.new.dat${BROTLI_EXTENSION}" ] && HAS_PRISM=true
     [ -f "$SRC_DIR/target/$TARGET_CODENAME/postinstall.edify" ] && HAS_POST_INSTALL=true
 
     {
@@ -397,34 +393,6 @@ GENERATE_UPDATER_SCRIPT()
             echo    '  abort("E2001: Failed to update system_dlkm image.");'
         fi
         echo -e "\n# --- End patching dynamic partitions ---\n"
-        echo -e "\n# --- Start patching csc partitions ---"
-        if $HAS_OPTICS; then
-            echo -e "\n# Patch partition optics\n"
-            echo    'ui_print("Patching optics image unconditionally...");'
-            echo    'show_progress(0.100000, 0);'
-            echo -n    'block_image_update('
-            echo -n    '"'
-            echo -n    "$TARGET_BOOT_DEVICE_PATH"
-            echo -n    '/optics", '
-            echo -n    'package_extract_file("optics.transfer.list"), '
-            echo -n    "\"optics.new.dat${BROTLI_EXTENSION}\""
-            echo       ', "optics.patch.dat") ||'
-            echo    '  abort("E2001: Failed to update optics image.");'
-        fi
-        if $HAS_PRISM; then
-            echo -e "\n# Patch partition prism\n"
-            echo    'ui_print("Patching prism image unconditionally...");'
-            echo    'show_progress(0.100000, 0);'
-            echo -n    'block_image_update('
-            echo -n    '"'
-            echo -n    "$TARGET_BOOT_DEVICE_PATH"
-            echo -n    '/prism", '
-            echo -n    'package_extract_file("prism.transfer.list"), '
-            echo -n    "\"prism.new.dat${BROTLI_EXTENSION}\""
-            echo       ', "prism.patch.dat") ||'
-            echo    '  abort("E2001: Failed to update prism image.");'
-        fi
-        echo -e "\n# --- End patching csc partitions ---\n"
         if $HAS_DTBO; then
             echo    'ui_print("Full Patching dtbo.img img...");'
             echo -n 'package_extract_file("dtbo.img", "'
@@ -536,18 +504,7 @@ while IFS= read -r f; do
     "$SRC_DIR/scripts/build_fs_image.sh" "$TARGET_OS_FILE_SYSTEM" \
         -o "$TMP_DIR/$PARTITION.img" -m -S \
         "$WORK_DIR/$PARTITION" "$WORK_DIR/configs/file_context-$PARTITION" "$WORK_DIR/configs/fs_config-$PARTITION" || exit 1
-done < <(find "$WORK_DIR" -maxdepth 1 -type d ! -name "optics" ! -name "prism")
-LOG_STEP_OUT
-
-LOG_STEP_IN "- Building CSC partitions"
-while IFS= read -r f; do
-    PARTITION=$(basename "$f")
-    IS_VALID_PARTITION_NAME "$PARTITION" || continue
-
-    "$SRC_DIR/scripts/build_fs_image.sh" "ext4" \
-        -o "$TMP_DIR/$PARTITION.img" -m -S \
-        "$WORK_DIR/$PARTITION" "$WORK_DIR/configs/file_context-$PARTITION" "$WORK_DIR/configs/fs_config-$PARTITION" || exit 1
-done < <(find "$WORK_DIR" -maxdepth 1 -type d \( -name "optics" -o -name "prism" \))
+done < <(find "$WORK_DIR" -maxdepth 1 -type d)
 LOG_STEP_OUT
 
 LOG "- Building unsparse_super_empty.img"

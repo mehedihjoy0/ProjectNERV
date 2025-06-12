@@ -37,9 +37,3 @@ done
 for f in $VENDOR_DEBLOAT; do
     DELETE_FROM_WORK_DIR "vendor" "$f"
 done
-for f in $OPTICS_DEBLOAT; do
-    DELETE_FROM_WORK_DIR "optics" "$f"
-done
-for f in $PRISM_DEBLOAT; do
-    DELETE_FROM_WORK_DIR "prism" "$f"
-done
