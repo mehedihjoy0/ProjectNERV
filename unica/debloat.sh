@@ -62,11 +62,8 @@ priv-app/SearchSelector
 "
 
 SYSTEM_DEBLOAT+="
-system/app/AutomationTest_FB
 system/app/DRParser
 system/app/DictDiotekForSec
-system/app/FactoryAirCommandManager
-system/app/FactoryCameraFB
 system/app/FBAppManager_NS
 system/app/MoccaMobile
 system/app/PlayAutoInstallConfig
@@ -88,11 +85,8 @@ system/app/SamsungTTSVoice_th_TH_f00
 system/app/SamsungTTSVoice_vi_VN_f00
 system/app/SilentLog
 system/app/SmartReminder
-system/app/WebManual
-system/etc/init/digitalkey_init_nfc_tss2.rc
 system/etc/init/samsung_pass_authenticator_service.rc
 system/etc/permissions/privapp-permissions-com.microsoft.skydrive.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.app.kfa.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.authfw.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.carkey.xml
 system/etc/permissions/privapp-permissions-com.samsung.android.cidmanager.xml
@@ -125,7 +119,7 @@ system/priv-app/BCService
 system/priv-app/CIDManager
 system/priv-app/DeviceKeystring
 system/priv-app/DeXonPC
-system/priv-app/DiagMonAgent91
+system/priv-app/DiagMonAgent94
 system/priv-app/DigitalKey
 system/priv-app/FBInstaller_NS
 system/priv-app/FBServices
@@ -135,7 +129,7 @@ system/priv-app/GameHome
 system/priv-app/OneDrive_Samsung_v3
 system/priv-app/OMCAgent5
 system/priv-app/PaymentFramework
-system/priv-app/SOAgent7
+system/priv-app/SOAgent75
 system/priv-app/SamsungCarKeyFw
 system/priv-app/SamsungPass
 system/priv-app/Upday
