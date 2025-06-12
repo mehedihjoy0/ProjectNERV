@@ -26,3 +26,6 @@ if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION"
 
     sed -i "$(sed -n "/config_enableDisplayCutoutProtection/=" "$FTP") c$R" "$FTP"
 fi
+
+# Set custom Display ID prop
+SET_PROP "system" "ro.build.display.id" "Project NERV $(echo -n ${ROM_VERSION} | cut -d "-" -f1)-${ROM_CODENAME} - ${TARGET_CODENAME} [$(GET_PROP "system" "ro.build.display.id")]"
