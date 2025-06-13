@@ -43,7 +43,7 @@ BUILD()
     cp -a "$OUTPUT_PATH/original/META-INF" "$OUTPUT_PATH/build/apk/META-INF"
 
     # Build APK with --shorten-resource-paths (https://developer.android.com/tools/aapt2#optimize_options)
-    EVAL "apktool b -api 29 -j \"4\" -p \"$FRAMEWORK_DIR\" -srp \"$OUTPUT_PATH\"" || exit 1
+    EVAL "apktool b -api 29 -j \"2\" -p \"$FRAMEWORK_DIR\" -srp \"$OUTPUT_PATH\"" || exit 1
 
     local FILE_NAME
     FILE_NAME="$(basename "$INPUT_FILE")"
@@ -94,9 +94,9 @@ DECODE()
     # - Use .locals directive instead of the .registers one
     # - Use a sequential numbering scheme for labels
     if [[ "$INPUT_FILE" == *rro_*.apk ]]; then
-        EVAL "apktool d -b -j \"4\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
+        EVAL "apktool d -b -j \"2\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
     else
-        EVAL "apktool d -b -r  -api 29 -j \"4\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
+        EVAL "apktool d -b -r  -api 29 -j \"2\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
     fi
 
     # https://github.com/iBotPeaches/Apktool/issues/3615
