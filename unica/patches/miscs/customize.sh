@@ -17,15 +17,5 @@ if [[ -f "$TARGET_FIRMWARE_PATH/vendor/lib64/libDualCamBokehCapture.camera.samsu
     fi
 fi
 
-# Enable camera cutout protection
-if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
-    DECODE_APK "system_ext" "priv-app/SystemUI/SystemUI.apk"
-
-    FTP="$APKTOOL_DIR/system_ext/priv-app/SystemUI/SystemUI.apk/res/values/bools.xml"
-    R="\ \ \ \ <bool name=\"config_enableDisplayCutoutProtection\">$TARGET_SUPPORT_CUTOUT_PROTECTION</bool>"
-
-    sed -i "$(sed -n "/config_enableDisplayCutoutProtection/=" "$FTP") c$R" "$FTP"
-fi
-
 # Set custom Display ID prop
 SET_PROP "system" "ro.build.display.id" "Project NERV $(echo -n ${ROM_VERSION} | cut -d "-" -f1)-${ROM_CODENAME} - ${TARGET_CODENAME} [$(GET_PROP "system" "ro.build.display.id")]"
