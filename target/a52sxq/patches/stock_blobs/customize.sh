@@ -88,3 +88,11 @@ ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libnfc-nci_flags.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libnfc-sec.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libstatslog_nfc.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/priv-app/NfcNci/lib/arm64/libnfc_sec_jni.so"
+
+echo "wpa_supplicant for One UI 7 [A73XQ]"
+ADD_TO_WORK_DIR "a73xqxx" "vendor" "bin/hw/wpa_supplicant"
+
+echo "Fixing brightness [Light HAL from A73XQ]"
+ADD_TO_WORK_DIR "a73xqxx" "vendor" "bin/hw/vendor.samsung.hardware.light-service"
+ADD_TO_WORK_DIR "a73xqxx" "vendor" "lib64/android.hardware.light-V1-ndk_platform.so"
+ADD_TO_WORK_DIR "a73xqxx" "vendor" "lib64/vendor.samsung.hardware.light-V1-ndk_platform.so"
