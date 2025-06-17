@@ -1,0 +1,4 @@
+id=gpu
+name=Update GPU blobs
+author=Ksawlii, Flopster101
+description=Updates Mali G68 blobs to r38p1 from A546BXXUCDYDB.
