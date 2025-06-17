@@ -47,7 +47,11 @@ _GET_SRC_DIR()
 
 _PRINT_USAGE()
 {
-    echo "Usage: source buildenv.sh [--debug] <target>" >&2
+    echo "Usage: source buildenv.sh [--debug] [--model] <target>" >&2
+    echo "Example: source buildenv.sh --model M346B m34x" >&2
+    echo "Options:" >&2
+    echo "    --debug  Make a debug build" >&2
+    echo "    --model  Use a different model" >&2
     echo "Available devices:" >&2
     printf '%s\n' "${TARGETS[@]}" >&2
 }
@@ -111,6 +115,7 @@ if [ ! "$SRC_DIR" ]; then
     return 1
 fi
 
+unset MODEL
 unset -f _GET_SRC_DIR
 
 export DEBUG=false
@@ -128,16 +133,23 @@ while IFS= read -r t; do
 done < <(find "$SRC_DIR/target" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort)
 
 while [[ "$1" == "-"* ]]; do
-    if [[ "$1" == "--debug" ]]; then
-        export DEBUG=true
-    elif [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
-        _PRINT_USAGE
-        return 0
-    else
-        echo "Unknown option: $1" >&2
-        _PRINT_USAGE
-        return 1
-    fi
+    case "$1" in
+        --debug)
+            export DEBUG=true
+            ;;
+        --model)
+            MODEL="$1"
+            ;;
+        --help|-h)
+            _PRINT_USAGE
+            return 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            _PRINT_USAGE
+            return 1
+            ;;
+    esac
     shift
 done
 
@@ -161,6 +173,14 @@ if [ ! -d "$SRC_DIR/target/$SELECTED_TARGET" ]; then
     return 1
 fi
 
+if [ "$MODEL" != "" ]; then
+    if ! grep -q "$MODEL" "$SRC_DIR/target/$TARGET_CODENAME"; then
+        echo "\"$MODEL\" is not a valid model." >&2
+        _PRINT_USAGE
+        return 1
+    fi
+fi
+
 unset -f _PRINT_USAGE
 
 export APKTOOL_DIR="$OUT_DIR/target/$SELECTED_TARGET/apktool"
@@ -172,7 +192,16 @@ mkdir -p "$OUT_DIR/target/$SELECTED_TARGET"
 "$SRC_DIR/scripts/internal/gen_config_file.sh" "$SELECTED_TARGET" || return 1
 set -o allexport; source "$OUT_DIR/config.sh"; set +o allexport
 
-unset TARGETS SELECTED_TARGET
+if [ "$MODEL" != "" ]; then
+    if ! grep -q "TARGET_MODEL=\"$MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"
+        sed -i "s/^TARGET_MODEL *= *\"\".*/TARGET_MODEL=\"$MODEL\"/" "$OUT_DIR/config.sh"
+    fi
+else
+    echo "- TARGET_MODEL variable does not exist in \"$TARGET_CODENAME\" target. Ignoring --model."
+    unset MODEL
+fi
+
+unset TARGETS SELECTED_TARGET MODEL
 
 echo "=============================="
 sed "/Automatically/d" "$OUT_DIR/config.sh"

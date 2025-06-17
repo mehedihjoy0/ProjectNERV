@@ -31,10 +31,13 @@ TMP_DIR="$OUT_DIR/zip"
 
 ZIP_FILE_SUFFIX=".zip"
 
-ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)_${TARGET_CODENAME}${ZIP_FILE_SUFFIX}"
+TARGET_DEVICE="$TARGET_CODENAME"
+[ "$TARGET_MODEL" != "" ] && TARGET_DEVICE="$TARGET_MODEL"
+
+ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)_${TARGET_DEVICE}${ZIP_FILE_SUFFIX}"
 while [ -f "$OUT_DIR/$ZIP_FILE_NAME" ]; do
     INCREMENTAL=$((INCREMENTAL + 1))
-    ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)-${INCREMENTAL}_${TARGET_CODENAME}${ZIP_FILE_SUFFIX}"
+    ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)-${INCREMENTAL}_${TARGET_DEVICE}${ZIP_FILE_SUFFIX}"
 done
 
 trap 'rm -rf "$TMP_DIR"' EXIT INT
@@ -446,7 +449,7 @@ PRINT_HEADER()
     echo    'ui_print(" ");'
     echo    'ui_print("****************************************");'
     echo -n 'ui_print("'
-    echo -n "Project NERV $ROM_VERSION for $TARGET_NAME"
+    echo -n "Project NERV $ROM_VERSION for $TARGET_DEVICE"
     echo    '");'
     echo    'ui_print("Build system by salvo_giangri @XDAforums");'
     echo    'ui_print("****************************************");'
