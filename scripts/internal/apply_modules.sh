@@ -96,6 +96,11 @@ APPLY_SMALI_PATCHES()
                 [[ "$p" == *"UNICA"* ]] && continue
             fi
         fi
+        if [[ "$p" == *".essi."* ]] && [[ "$TARGET_SINGLE_SYSTEM_IMAGE" == "qssi" ]]; then
+            continue
+        elif [[ "$p" == *".qssi."* ]] && [[ "$TARGET_SINGLE_SYSTEM_IMAGE" == "essi" ]]; then
+            continue
+        fi
 
         APPLY_PATCH "$PARTITION" "$FILE" "$p"
     done < <(find "$PATCHES_PATH/$TARGET" -type f -name "*.patch" | sort -n)
