@@ -21,11 +21,16 @@
 # - DO NOT add a slash at the start of any entry (eg. "/dpolicy_system")
 
 # Overlays
+SYSTEM_DEBLOAT+="
+system/app/WifiRROverlayAppQC
+"
 PRODUCT_DEBLOAT+="
 overlay/SoftapOverlay6GHz
 overlay/SoftapOverlayDualAp
 overlay/SoftapOverlayOWE
+overlay/SoftapOverlayQC
 "
+
 
 # mAFPC
 SYSTEM_DEBLOAT+="
