@@ -21,26 +21,13 @@ source "$SRC_DIR/scripts/utils/build_utils.sh" || exit 1
 
 TMP_DIR="$OUT_DIR/zip"
 
-ZIP_FILE_SUFFIX="-sign.zip"
-$DEBUG && ! $ROM_IS_OFFICIAL && ZIP_FILE_SUFFIX=".zip"
+ZIP_FILE_SUFFIX=".zip"
 
 ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)_${TARGET_CODENAME}${ZIP_FILE_SUFFIX}"
 while [ -f "$OUT_DIR/$ZIP_FILE_NAME" ]; do
     INCREMENTAL=$((INCREMENTAL + 1))
     ZIP_FILE_NAME="ProjectNERV_${ROM_VERSION}_$(date +%Y%m%d)-${INCREMENTAL}_${TARGET_CODENAME}${ZIP_FILE_SUFFIX}"
 done
-
-PRIVATE_KEY_PATH="$SRC_DIR/security/"
-PUBLIC_KEY_PATH="$SRC_DIR/security/"
-if $ROM_IS_OFFICIAL; then
-    PRIVATE_KEY_PATH+="unica_ota"
-    PUBLIC_KEY_PATH+="unica_ota"
-else
-    PRIVATE_KEY_PATH+="aosp_testkey"
-    PUBLIC_KEY_PATH+="aosp_testkey"
-fi
-PRIVATE_KEY_PATH+=".pk8"
-PUBLIC_KEY_PATH+=".x509.pem"
 
 trap 'rm -rf "$TMP_DIR"' EXIT INT
 
@@ -568,12 +555,6 @@ while IFS= read -r f; do
     fi
 done < <(find "$TMP_DIR" -type f ! -name "*.zip")
 
-if ! $DEBUG || $ROM_IS_OFFICIAL; then
-    LOG "- Signing zip"
-    EVAL "signapk -w \"$PUBLIC_KEY_PATH\" \"$PRIVATE_KEY_PATH\" \"$TMP_DIR/rom.zip\" \"$OUT_DIR/$ZIP_FILE_NAME\"" || exit 1
-    rm -f "$TMP_DIR/rom.zip"
-else
-    mv -f "$TMP_DIR/rom.zip" "$OUT_DIR/$ZIP_FILE_NAME"
-fi
+mv -f "$TMP_DIR/rom.zip" "$OUT_DIR/$ZIP_FILE_NAME"
 
 exit 0
