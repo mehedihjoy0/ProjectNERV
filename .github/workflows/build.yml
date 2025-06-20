@@ -1,11 +1,7 @@
-name: Build
+name: Build ProjectNERV
 
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      - 'fifteen'
 
 jobs:
   build:
@@ -14,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [a52sxq, a73xq, m52xq, r9q, r9q2]
+        target: [a73xq, a52sxq, m52xq, r9q2]
 
     steps:
       - name: Checkout repo
@@ -42,14 +38,13 @@ jobs:
         run: |
           sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
-            attr ccache clang ffmpeg golang \
+            jq attr ccache clang ffmpeg golang \
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev linux-modules-extra-$(uname -r) lld pcre2-utils protobuf-compiler python3.12-venv webp
+            libzstd-dev linux-modules-extra-$(uname -r) lld jq protobuf-compiler pcre2-utils webp \
+            curl xxd patchelf flex bison libarchive-tools build-essential python3.12-venv
           sudo modprobe erofs f2fs
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          echo -n "${{ secrets.PLATFORM_KEY_PK8 }}" | base64 --decode > security/unica_platform.pk8
-          echo -n "${{ secrets.PLATFORM_KEY_PEM }}" | base64 --decode > security/unica_platform.x509.pem
 
       - name: Set up JDK 11
         uses: actions/setup-java@v4
@@ -59,21 +54,38 @@ jobs:
           cache: 'gradle'
 
       - name: Build dependencies
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/build_dependencies.sh
+        run: source ./buildenv.sh ${{ matrix.target }}
 
-      - name: Download stock firmwares
+      - name: Download source firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh
+          TARGET_FIRMWARE="$SOURCE_FIRMWARE" ./scripts/download_fw.sh
 
-      - name: Extract stock firmwares
+      - name: Extract source firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh
+          TARGET_FIRMWARE="$SOURCE_FIRMWARE" ./scripts/extract_fw.sh
+      - name: Download target firmware
+        run: |
+          source ./buildenv.sh ${{ matrix.target }}
+          SOURCE_FIRMWARE="$TARGET_FIRMWARE" ./scripts/download_fw.sh
+
+      - name: Extract target firmware
+        run: |
+          source ./buildenv.sh ${{ matrix.target }}
+          SOURCE_FIRMWARE="$TARGET_FIRMWARE" ./scripts/extract_fw.sh
 
       - name: Build ROM
         run: |
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/make_rom.sh
+
+      - name: Upload to GoFile
+        run: |
+          ZIP_FILE=$(find out -maxdepth 1 -type f -name "*.zip" | head -n 1)
+
+          RESPONSE=$(curl -s -F "file=@$ZIP_FILE" -F "token=${{ secrets.GOFILE_TOKEN }}" -F "folderId=${{ secrets.GOFILE_FOLDER_ID }}" "https://upload-eu-par.gofile.io/uploadFile")
+
+          echo "Uploaded successfully! Download link:"
+          echo "$RESPONSE" | jq -r '.data.downloadPage'
+          echo "WARNING! THESE BUILDS MAY NOT BOOTABLE, ONLY FLASH FOR TESTING PURPOSES ONLY IF THE DEVELOPER TOLD YOU."
