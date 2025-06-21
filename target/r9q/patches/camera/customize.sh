@@ -49,7 +49,7 @@ do
     DELETE_FROM_WORK_DIR "system" "$blob"
 done
 
-echo "Add stock camera libs"
+LOG_STEP_IN "- Adding stock camera libs"
 BLOBS_LIST="
 system/etc/public.libraries-arcsoft.txt
 system/etc/public.libraries-camera.samsung.txt
@@ -84,6 +84,8 @@ done
 {
     echo "libLttEngine.camera.samsung.so"
 } >> "$WORK_DIR/system/system/etc/public.libraries-camera.samsung.txt"
+LOG_STEP_OUT
 
-echo "Fix MIDAS model detection"
+LOG_STEP_IN "- Fixing MIDAS model detection"
 sed -i "s/ro.product.device/ro.product.vendor.device/g" "$WORK_DIR/vendor/etc/midas/midas_config.json"
+LOG_STEP_OUT

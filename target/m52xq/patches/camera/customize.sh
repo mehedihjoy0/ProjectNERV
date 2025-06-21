@@ -71,7 +71,7 @@ do
     DELETE_FROM_WORK_DIR "system" "$blob"
 done
 
-echo "Add stock camera libs"
+LOG_STEP_IN "- Adding stock camera libs"
 BLOBS_LIST="
 system/lib64/libFacialStickerEngine.arcsoft.so
 system/lib64/libHpr_RecFace_dl_v1.0.camera.samsung.so
@@ -91,3 +91,4 @@ for blob in $BLOBS_LIST
 do
     ADD_TO_WORK_DIR "a73xqxx" "system" "$blob" 0 0 644 "u:object_r:system_lib_file:s0"
 done
+LOG_STEP_OUT

@@ -98,8 +98,10 @@ done
     echo "libLttEngine.camera.samsung.so"
 } >> "$WORK_DIR/system/system/etc/public.libraries-camera.samsung.txt"
 
-echo "Fix MIDAS model detection"
+LOG_STEP_IN "- Fixing MIDAS model detection"
 sed -i "s/ro.product.device/ro.product.vendor.device/g" "$WORK_DIR/vendor/etc/midas/midas_config.json"
+LOG_STEP_OUT
 
-echo "Editing camera-feature.xml"
+LOG_STEP_IN "- Editing camera-feature.xml"
 cat "$SRC_DIR/target/a73xq/patches/camera/camera-feature.xml" > "$WORK_DIR/system/system/cameradata/camera-feature.xml"
+LOG_STEP_OUT

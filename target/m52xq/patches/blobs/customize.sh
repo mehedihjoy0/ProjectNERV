@@ -7,18 +7,20 @@ DELETE_FROM_WORK_DIR "system" "system/etc/permissions/com.sec.feature.pocketsens
 DELETE_FROM_WORK_DIR "system" "system/etc/permissions/com.sec.feature.sensorhub_level29.xml"
 DELETE_FROM_WORK_DIR "system" "system/etc/permissions/com.sec.feature.usb_authentication.xml"
 DELETE_FROM_WORK_DIR "system" "system/etc/permissions/com.sec.feature.wirelesscharger_authentication.xml"
-echo "Add stock system features [M52XQ]"
+LOG_STEP_IN "- Adding stock system features [M52XQ]"
 ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/permissions/com.sec.feature.cover.minisviewwalletcover.xml" 0 0 644 "u:object_r:system_file:s0"
 ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/permissions/com.sec.feature.nsflp_level_600.xml" 0 0 644 "u:object_r:system_file:s0"
 ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/permissions/com.sec.feature.sensorhub_level40.xml" 0 0 644 "u:object_r:system_file:s0"
+LOG_STEP_OUT
 
-echo "Add a73xq libhwui"
+LOG_STEP_IN "- Adding a73xq libhwui"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/libhwui.so"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libhwui.so"
+LOG_STEP_OUT
 
 DELETE_FROM_WORK_DIR "system" "system/lib64/libhdcp_client_aidl.so"
 DELETE_FROM_WORK_DIR "system" "system/lib64/vendor.samsung.hardware.security.hdcp.wifidisplay-V2-ndk.so"
-echo "Add a73xq WFD blobs"
+LOG_STEP_IN "- Adding a73xq WFD blobs"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/bin/insthk" 0 2000 755 "u:object_r:insthk_exec:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/bin/remotedisplay" 0 2000 755 "u:object_r:remotedisplay_exec:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libhdcp2.so" 0 0 644 "u:object_r:system_lib_file:s0"
@@ -27,6 +29,7 @@ ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libremotedisplay_wfd.so" 0 0 64
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libremotedisplayservice.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libsecuibc.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libstagefright_hdcp.so" 0 0 644 "u:object_r:system_lib_file:s0"
+LOG_STEP_OUT
 
 DELETE_FROM_WORK_DIR "system" "system/lib/android.hardware.security.keymint-V2-ndk.so"
 DELETE_FROM_WORK_DIR "system" "system/lib/android.hardware.security.secureclock-V1-ndk.so"
@@ -35,7 +38,7 @@ DELETE_FROM_WORK_DIR "system" "system/lib/vendor.samsung.hardware.keymint-V2-ndk
 DELETE_FROM_WORK_DIR "system" "system/lib64/android.hardware.security.keymint-V2-ndk.so"
 DELETE_FROM_WORK_DIR "system" "system/lib64/libdk_native_keymint.so"
 DELETE_FROM_WORK_DIR "system" "system/lib64/vendor.samsung.hardware.keymint-V2-ndk.so"
-echo "Add a73xq keymaster libs"
+LOG_STEP_IN "- Adding a73xq keymaster libs"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/android.hardware.keymaster@3.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/android.hardware.keymaster@4.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/android.hardware.keymaster@4.1.so" 0 0 644 "u:object_r:system_lib_file:s0"
@@ -45,8 +48,9 @@ ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/libkeymaster4_1support.so" 0 0 64
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib/libkeymaster4support.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/lib_nativeJni.dk.samsung.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libdk_native_keymaster.so" 0 0 644 "u:object_r:system_lib_file:s0"
+LOG_STEP_OUT
 
-echo "Fixing MIDAS, AI and camera [A73XQ]"
+LOG_STEP_IN "- Fixing MIDAS, AI and camera [A73XQ]"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/etc/public.libraries-camera.samsung.txt"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libSlowShutter_jni.media.samsung.so"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/lib_nativeJni.dk.samsung.so"
@@ -56,22 +60,26 @@ ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libsamsung_videoengine_9_0.so"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libtensorflowLite.camera.samsung.so"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/lib64/libtensorflowlite_inference_api.camera.samsung.so"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/priv-app/PhotoRemasterService/PhotoRemasterService.apk"
+LOG_STEP_OUT
 
-echo "Fixing Google Assistant"
+LOG_STEP_IN "- Fixing Google Assistant"
 DELETE_FROM_WORK_DIR "product" "priv-app/HotwordEnrollmentOKGoogleEx4HEXAGON"
 DELETE_FROM_WORK_DIR "product" "priv-app/HotwordEnrollmentXGoogleEx4HEXAGON"
 ADD_TO_WORK_DIR "a73xqxx" "product" "priv-app/HotwordEnrollmentOKGoogleEx3HEXAGON"
 ADD_TO_WORK_DIR "a73xqxx" "product" "priv-app/HotwordEnrollmentXGoogleEx3HEXAGON"
+LOG_STEP_OUT
 
-echo "Add manifest xmls"
+LOG_STEP_IN "- Adding manifest xmls"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/etc/vintf/manifest.xml"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/etc/vintf/compatibility_matrix.device.xml"
+LOG_STEP_OUT
 
-echo "Add a73xq saiv blobs"
+LOG_STEP_IN "- Adding a73xq saiv blobs"
 DELETE_FROM_WORK_DIR "system" "system/saiv"
 ADD_TO_WORK_DIR "a73xqxx" "system" "system/saiv" 0 0 755 "u:object_r:system_file:s0"
+LOG_STEP_OUT
 
-echo "Add pa1q nfc blobs"
+LOG_STEP_IN "- Adding pa1q nfc blobs"
 DELETE_FROM_WORK_DIR "system" "system/lib64/libnfc_nxpsn_jni.so"
 DELETE_FROM_WORK_DIR "system" "system/priv-app/NfcNci/lib/arm64/libnfc_nxpsn_jni.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libnfc_sec_jni.so"
@@ -79,3 +87,4 @@ ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libnfc-nci_flags.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libnfc-sec.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/lib64/libstatslog_nfc.so"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/priv-app/NfcNci/lib/arm64/libnfc_sec_jni.so"
+LOG_STEP_OUT

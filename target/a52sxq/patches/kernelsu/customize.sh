@@ -9,16 +9,18 @@ REPLACE_KERNEL_BINARIES()
     [ -d "$TMP_DIR" ] && rm -rf "$TMP_DIR"
     mkdir -p "$TMP_DIR"
 
-    echo "Downloading $(basename "$KERNELSU_ZIP")"
+    LOG_STEP_IN "- Downloading $(basename "$KERNELSU_ZIP")"
     DOWNLOAD_FILE "$KERNELSU_ZIP" "$TMP_DIR/ksu.zip"
+    LOG_STEP_OUT
 
-    echo "Extracting kernel binaries"
+    LOG_STEP_IN "- Extracting kernel binaries"
     rm -f "$WORK_DIR/kernel/"*.img
     unzip -q -j "$TMP_DIR/ksu.zip" \
         "mesa/boot.img" "mesa/dtbo.img" "mesa/vendor_boot.img" \
         -d "$WORK_DIR/kernel"
+    LOG_STEP_OUT
 
-    echo "Extracting kernel modules"
+    LOG_STEP_IN "- Extracting kernel modules"
     rm -f "$WORK_DIR/vendor/bin/vendor_modprobe.sh"
     DELETE_FROM_WORK_DIR "vendor" "lib/modules/5.4-gki"
     rm -rf "$WORK_DIR/vendor/lib/modules/"*
@@ -35,6 +37,7 @@ REPLACE_KERNEL_BINARIES()
     if ! grep -q "wlan.ko" "$WORK_DIR/configs/fs_config-vendor"; then
         echo "vendor/lib/modules/wlan.ko 0 0 644 capabilities=0x0" >> "$WORK_DIR/configs/fs_config-vendor"
     fi
+    LOG_STEP_OUT
 
     rm -rf "$TMP_DIR"
 }
@@ -44,8 +47,9 @@ ADD_MANAGER_APK_TO_PRELOAD()
     # https://github.com/tiann/KernelSU/issues/886
     local APK_PATH="system/preload/KernelSU/me.weishu.kernelsu-mesa==/base.apk"
 
-    echo "Adding KernelSU.apk to preload apps"
+    LOG_STEP_IN "- Adding KernelSU.apk to preload apps"
     DOWNLOAD_FILE "$KERNELSU_MANAGER_APK" "$WORK_DIR/system/$APK_PATH"
+    LOG_STEP_OUT
 
     sed -i "/system\/preload/d" "$WORK_DIR/configs/fs_config-system" \
         && sed -i "/system\/preload/d" "$WORK_DIR/configs/file_context-system"

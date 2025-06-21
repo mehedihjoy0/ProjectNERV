@@ -1,5 +1,5 @@
 # Fix camera lock for devices with a rear SLSI sensor
-echo "Patching camera HAL"
+LOG_STEP_IN "- Patching camera HAL"
 HAL_LIBS="
 $WORK_DIR/vendor/lib/hw/camera.qcom.so
 $WORK_DIR/vendor/lib/hw/com.qti.chi.override.so
@@ -110,6 +110,8 @@ done
 {
     echo "libLttEngine.camera.samsung.so"
 } >> "$WORK_DIR/system/system/etc/public.libraries-camera.samsung.txt"
+LOG_STEP_OUT
 
-echo "Fix MIDAS model detection"
+LOG_STEP_IN "- Fixing MIDAS model detection"
 sed -i "s/ro.product.device/ro.product.vendor.device/g" "$WORK_DIR/vendor/etc/midas/midas_config.json"
+LOG_STEP_OUT
