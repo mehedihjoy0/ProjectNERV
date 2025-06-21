@@ -509,7 +509,7 @@ GET_PROP()
 # Returns whether or not the supplied file is a valid sparse image.
 IS_SPARSE_IMAGE()
 {
-    _CHECK_NON_EMPTY_PARAM "FILE" "$1"
+    _CHECK_NON_EMPTY_PARAM "FILE" "$1" || exit 1
 
     local FILE="$1"
 

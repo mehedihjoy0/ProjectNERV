@@ -207,7 +207,7 @@ PREPARE_SCRIPT()
     done
 
     if ! $IGNORE_SOURCE; then
-        _CHECK_NON_EMPTY_PARAM "SOURCE_FIRMWARE" "$SOURCE_FIRMWARE"
+        _CHECK_NON_EMPTY_PARAM "SOURCE_FIRMWARE" "$SOURCE_FIRMWARE" || exit 1
         FIRMWARES+=("$SOURCE_FIRMWARE")
         IFS=':' read -r -a SOURCE_EXTRA_FIRMWARES <<< "$SOURCE_EXTRA_FIRMWARES"
         if [ "${#SOURCE_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
@@ -216,7 +216,7 @@ PREPARE_SCRIPT()
     fi
 
     if ! $IGNORE_TARGET; then
-        _CHECK_NON_EMPTY_PARAM "TARGET_FIRMWARE" "$TARGET_FIRMWARE"
+        _CHECK_NON_EMPTY_PARAM "TARGET_FIRMWARE" "$TARGET_FIRMWARE" || exit 1
         FIRMWARES+=("$TARGET_FIRMWARE")
         IFS=':' read -r -a TARGET_EXTRA_FIRMWARES <<< "$TARGET_EXTRA_FIRMWARES"
         if [ "${#TARGET_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
@@ -380,12 +380,9 @@ for i in "${FIRMWARES[@]}"; do
         # Skip if firmware has been extracted
         if [ -f "$FW_DIR/${MODEL}_${CSC}/.extracted" ]; then
             if ! COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$LATEST_FIRMWARE"; then
-                if [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ]; then
-                    if ! COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")"; then
-                        LOG "\033[0;33m! A newer firmware has been downloaded, use --force flag if you want to overwrite it\033[0m"
-                    else
-                        LOG "\033[0;33m! This firmware has already been extracted\033[0m"
-                    fi
+                if [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ] && \
+                        ! COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")"; then
+                    LOG "\033[0;33m! A newer firmware has been downloaded, use --force flag if you want to overwrite it\033[0m"
                 else
                     LOG "\033[0;33m! A newer firmware is available for download\033[0m"
                 fi

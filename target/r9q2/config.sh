@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Device configuration file for Galaxy S21 FE 5G (Qualcomm) (r9q2)
-TARGET_NAME="Galaxy S21 FE 5G (Qualcomm)"
+# Device configuration file for Galaxy S21 FE 5G (Snapdragon) (r9q2)
+TARGET_NAME="Galaxy S21 FE 5G (Snapdragon)"
 TARGET_CODENAME="r9q2"
 TARGET_ASSERT_MODEL=("SM-G990B2")
 TARGET_FIRMWARE="SM-G990B2/EUX/350370851234560"

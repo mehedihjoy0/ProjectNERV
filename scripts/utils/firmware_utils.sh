@@ -170,7 +170,7 @@ PARSE_FIRMWARE_STRING()
 # Unsparse the supplied file, a different output path can be provided optionally.
 UNSPARSE_IMAGE()
 {
-    _CHECK_NON_EMPTY_PARAM "FILE" "$1"
+    _CHECK_NON_EMPTY_PARAM "FILE" "$1" || exit 1
 
     local FILE="$1"
     local OUTPUT_PATH="$2"

@@ -96,7 +96,7 @@ DECODE()
     if [[ "$INPUT_FILE" == *rro_*.apk ]]; then
         EVAL "apktool d -b -j \"2\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
     else
-        EVAL "apktool d -b -r  -api 29 -j \"2\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
+        EVAL "apktool d -b -r -api 29 -j \"2\" -o \"$OUTPUT_PATH\" -p \"$FRAMEWORK_DIR\" -t \"$FRAMEWORK_TAG\" \"$INPUT_FILE\"" || exit 1
     fi
 
     # https://github.com/iBotPeaches/Apktool/issues/3615
