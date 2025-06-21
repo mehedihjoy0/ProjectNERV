@@ -9,6 +9,7 @@ else
     echo "Unknown boot animation resolution for \"$TARGET_CODENAME\""
 fi
 
-echo "Adding S25 Sounds"
+LOG_STEP_IN "- Adding S25 Sounds"
 DELETE_FROM_WORK_DIR "system" "system/media/audio"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/media/audio"
+LOG_STEP_OUT
