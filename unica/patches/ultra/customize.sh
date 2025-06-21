@@ -28,5 +28,5 @@ if [ -d "$TARGET_FIRMWARE_PATH/system/system/media/audio/pensounds" ]; then
     ADD_TO_WORK_DIR "$SOURCE" "system" "system/priv-app/AirReadingGlass/AirReadingGlass.apk" 0 0 644 "u:object_r:system_file:s0"
     ADD_TO_WORK_DIR "$SOURCE" "system" "system/priv-app/SmartEye/SmartEye.apk" 0 0 644 "u:object_r:system_file:s0"
 else
-    echo "Target device is not an Ultra variant. Ignoring"
+    LOG "- Target device is not an Ultra variant. Ignoring"
 fi

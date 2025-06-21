@@ -8,8 +8,8 @@ if ! $SOURCE_HAS_MASS_CAMERA_APP; then
         fi
         ADD_TO_WORK_DIR "r11sxxx" "system" "system/priv-app/SamsungCamera/SamsungCamera.apk" 0 0 644 "u:object_r:system_file:s0"
     else
-        echo "TARGET_HAS_MASS_CAMERA_APP is not set. Ignoring"
+        LOG "- TARGET_HAS_MASS_CAMERA_APP is not set. Ignoring"
     fi
 else
-    echo "SOURCE_HAS_MASS_CAMERA_APP is set. Ignoring"
+    LOG "- SOURCE_HAS_MASS_CAMERA_APP is set. Ignoring"
 fi
