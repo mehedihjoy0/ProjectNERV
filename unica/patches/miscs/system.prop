@@ -1,2 +1,11 @@
 # Disable OEM unlock toggle
 ro.oem_unlock_supported=0
+
+# Crok's RAM Managment Fix
+# https://github.com/crok/crokrammgmtfix/blob/master/system.prop
+ro.sys.fw.bg_apps_limit=128
+ro.vendor.qti.sys.fw.bg_apps_limit=128
+ro.vendor.qti.sys.fw.bservice_enable=true
+ro.vendor.qti.sys.fw.bservice_age=10000
+ro.vendor.qti.sys.fw.bservice_limit=128
+
