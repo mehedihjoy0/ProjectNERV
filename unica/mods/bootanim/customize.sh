@@ -1,4 +1,4 @@
-TWOTHREE_TARGETS=""
+TWOTHREE_TARGETS="m34x f34x"
 TWOFOUR_TARGETS="a52sxq a73xq m52xq r8q r9q r9q2"
 
 if echo "$TWOTHREE_TARGETS" | grep -q -w "$TARGET_CODENAME"; then
