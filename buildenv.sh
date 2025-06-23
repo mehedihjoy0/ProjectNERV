@@ -193,7 +193,7 @@ mkdir -p "$OUT_DIR/target/$SELECTED_TARGET"
 set -o allexport; source "$OUT_DIR/config.sh"; set +o allexport
 
 if [ "$MODEL" != "" ]; then
-    if ! grep -q "TARGET_MODEL=\"$MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"
+    if ! grep -q "TARGET_MODEL=\"$MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
         sed -i "s/^TARGET_MODEL *= *\"\".*/TARGET_MODEL=\"$MODEL\"/" "$OUT_DIR/config.sh"
     fi
 else
