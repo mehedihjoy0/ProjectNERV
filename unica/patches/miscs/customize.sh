@@ -21,15 +21,16 @@ fi
 if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
     DECODE_APK "product" "overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk"
 
-    XML="$APKTOOL_DIR/product/overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk/res/values/bools.xml"
+    XMLS="$APKTOOL_DIR/product/overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk/res/values/"
 
     if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
         if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" == "true" ]]; then
-            sed -i -e "/CutoutProtection/d" "$XML"
+            sed -i -e "/CutoutProtection/d" "$XMLS/bools.xml"
+            rm -f "$XMLS/public.xml"
         else
-            sed -i '$d' "$XML"
-            echo "    <bool name=\"config_enableDisplayCutoutProtection\">true</bool>" >> "$XML"
-            echo "</resources>" >> "$XML"
+            sed -i '$d' "$XMLS/bools.xml"
+            echo "    <bool name=\"config_enableDisplayCutoutProtection\">true</bool>" >> "$XMLS/bools.xml"
+            echo "</resources>" >> "$XMLS/bools.xml"
         fi
     fi
 fi
