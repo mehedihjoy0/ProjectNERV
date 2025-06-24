@@ -21,7 +21,7 @@ fi
 if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
     DECODE_APK "product" "overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk"
 
-    XML="$WORK_DIR/product/overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk/res/values/bools.xml"
+    XML="$APKTOOL_DIR/product/overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk/res/values/bools.xml"
 
     if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
         if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" == "true" ]]; then
