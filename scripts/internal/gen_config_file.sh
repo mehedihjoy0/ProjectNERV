@@ -128,6 +128,22 @@ fi
 #     Example:
 #       `TARGET_MODEL="M346B"`
 #
+#      You must adapt config.sh for target device. All you need is
+#       
+#      if [ "$TARGET_MODEL" = "MODEL1" ]; then
+#          TARGET_FIRMWARE="SM-MODEL1/CSC1/IMEI1"
+#      elif [ "$TARGET_MODEL" = "MODEL2" ]; then
+#          TARGET_FIRMWARE="SM-MODEL2/CSC2/IMEI2"
+#      fi
+#
+#      Optionally you can also add
+#       
+#      if [ ! "$TARGET_MODEL" ]; then
+#          TARGET_MODEL="MODEL"
+#      fi
+#
+#      To set the default model
+#
 #   TARGET_ASSERT_MODEL
 #     If defined, the zip package will use the provided model numbers with the value in the `ro.boot.em.model` prop
 #     to ensure if it is compatible with the device it is currently being installed in, by default TARGET_CODENAME
@@ -343,8 +359,6 @@ fi
     GET_BUILD_VAR "TARGET_CODENAME"
     if [ "$TARGET_MODEL" != "" ]; then
         GET_BUILD_VAR "TARGET_MODEL"
-    else
-        echo "TARGET_MODEL=\"\""
     fi
     if [ "${#TARGET_ASSERT_MODEL[@]}" -ge 1 ]; then
         echo "TARGET_ASSERT_MODEL=\"$(IFS=":"; printf '%s' "${TARGET_ASSERT_MODEL[*]}")\""

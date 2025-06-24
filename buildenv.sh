@@ -119,6 +119,7 @@ unset MODEL
 unset -f _GET_SRC_DIR
 
 export DEBUG=false
+export TARGET_MODEL=""
 export SRC_DIR
 export OUT_DIR="$SRC_DIR/out"
 export TMP_DIR="$OUT_DIR/tmp"
@@ -126,6 +127,8 @@ export ODIN_DIR="$OUT_DIR/odin"
 export FW_DIR="$OUT_DIR/fw"
 export TOOLS_DIR="$OUT_DIR/tools"
 export PATH="$TOOLS_DIR/bin:$PATH"
+
+[ -f "$OUT_DIR/config.sh" ] && rm -f "$OUT_DIR/config.sh"
 
 TARGETS=()
 while IFS= read -r t; do
@@ -136,9 +139,17 @@ while [[ "$1" == "-"* ]]; do
     case "$1" in
         --debug)
             export DEBUG=true
+            shift
             ;;
         --model)
-            MODEL="$1"
+            shift
+            if [ -z "$1" ]; then
+                echo "Missing argument for --model" >&2
+                _PRINT_USAGE
+                return 1
+            fi
+            export TARGET_MODEL="$1"
+            shift
             ;;
         --help|-h)
             _PRINT_USAGE
@@ -150,7 +161,6 @@ while [[ "$1" == "-"* ]]; do
             return 1
             ;;
     esac
-    shift
 done
 
 if [ "$#" -ne 1 ]; then
@@ -173,9 +183,9 @@ if [ ! -d "$SRC_DIR/target/$SELECTED_TARGET" ]; then
     return 1
 fi
 
-if [ "$MODEL" != "" ]; then
-    if ! grep -q "$MODEL" "$SRC_DIR/target/$TARGET_CODENAME"; then
-        echo "\"$MODEL\" is not a valid model." >&2
+if [ -n "$TARGET_MODEL" ]; then
+    if ! grep -q "$TARGET_MODEL" "$SRC_DIR/target/$SELECTED_TARGET/config.sh"; then
+        echo "\"$TARGET_MODEL\" is not a valid model." >&2
         _PRINT_USAGE
         return 1
     fi
@@ -192,16 +202,21 @@ mkdir -p "$OUT_DIR/target/$SELECTED_TARGET"
 "$SRC_DIR/scripts/internal/gen_config_file.sh" "$SELECTED_TARGET" || return 1
 set -o allexport; source "$OUT_DIR/config.sh"; set +o allexport
 
-if [ "$MODEL" != "" ]; then
-    if ! grep -q "TARGET_MODEL=\"$MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
-        sed -i "s/^TARGET_MODEL *= *\"\".*/TARGET_MODEL=\"$MODEL\"/" "$OUT_DIR/config.sh"
+if [ -n "$TARGET_MODEL" ]; then
+    if ! grep -q "TARGET_MODEL" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
+        echo "- TARGET_MODEL variable does not exist in \"$TARGET_CODENAME\" target. Ignoring --model."
+        unset TARGET_MODEL
     fi
-else
-    echo "- TARGET_MODEL variable does not exist in \"$TARGET_CODENAME\" target. Ignoring --model."
-    unset MODEL
 fi
 
-unset TARGETS SELECTED_TARGET MODEL
+if [ -n "$TARGET_MODEL" ]; then
+    if ! grep -q "\"\\\$TARGET_MODEL\" = \"$TARGET_MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
+        echo "- \"$TARGET_MODEL\" not found in $TARGET_CODENAME config.sh."
+        return 1
+    fi
+fi
+
+unset TARGETS SELECTED_TARGET
 
 echo "=============================="
 sed "/Automatically/d" "$OUT_DIR/config.sh"

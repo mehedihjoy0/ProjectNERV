@@ -22,8 +22,8 @@ ROM_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
 # Append current commit hash to version name
 ROM_VERSION+="-$(git rev-parse --short HEAD)"
 # Append the model name to version name if target has TARGET_MODEL variable set
-if [ "$TARGET_MODEL" != "" ]; then
-    ROM_VERSION+="-${TARGET_ACTUAL_MODEL}"
+if [ -n "$TARGET_MODEL" ]; then
+    ROM_VERSION+="-${TARGET_MODEL}"
 fi
 
 # Match latest Samsung's flagship device codename
