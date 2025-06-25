@@ -1,3 +1,5 @@
+SKIPUNZIP=1
+
 SOURCE_FIRMWARE_PATH="$FW_DIR/$(echo -n "$SOURCE_FIRMWARE" | sed 's./._.g' | rev | cut -d "_" -f2- | rev)"
 TARGET_FIRMWARE_PATH="$FW_DIR/$(echo -n "$TARGET_FIRMWARE" | sed 's./._.g' | rev | cut -d "_" -f2- | rev)"
 
@@ -19,19 +21,22 @@ fi
 
 # Enable/Disable camera cutout protection
 if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
-    DECODE_APK "product" "overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk"
+    if [[ "$TARGET_SINGLE_SYSTEM_IMAGE" == "essi" ]]; then
+        RRO_APK="SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk"
+        XMLS_DIR="$APKTOOL_DIR/product/overlay/$RRO_APK/res/values"
 
-    XMLS="$APKTOOL_DIR/product/overlay/SystemUI__$(GET_PROP "$SOURCE_FIRMWARE_PATH/system/system/build.prop" "ro.product.system.name")__auto_generated_rro_product.apk/res/values/"
-
-    if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION" ]]; then
+        DECODE_APK "product" "overlay/$RRO_APK"
         if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" == "true" ]]; then
-            sed -i -e "/CutoutProtection/d" "$XMLS/bools.xml"
-            rm -f "$XMLS/public.xml"
+            sed -i "/CutoutProtection/d" "$XMLS_DIR/bools.xml"
+            rm -f "$XMLS_DIR/public.xml"
         else
-            sed -i '$d' "$XMLS/bools.xml"
-            echo "    <bool name=\"config_enableDisplayCutoutProtection\">true</bool>" >> "$XMLS/bools.xml"
-            echo "</resources>" >> "$XMLS/bools.xml"
+            sed -i '$d' "$XMLS_DIR/bools.xml"
+            echo "    <bool name=\"config_enableDisplayCutoutProtection\">true</bool>" >> "$XMLS_DIR/bools.xml"
+            echo "</resources>" >> "$XMLS_DIR/bools.xml"
         fi
+    else
+        cp -a --preserve=all "$SRC_DIR/unica/patches/miscs/product" "$APKTOOL_DIR"
+        SET_METADATA "product" "overlay/SystemUI__dm1qxxx__auto_generated_rro_product.apk" 0 0 644 "u:object_r:system_file:s0"
     fi
 fi
 
