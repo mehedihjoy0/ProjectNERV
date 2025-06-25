@@ -59,22 +59,22 @@ jobs:
       - name: Download source firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          TARGET_FIRMWARE="$SOURCE_FIRMWARE" ./scripts/download_fw.sh
+          ./scripts/download_fw.sh --ignore-target
 
       - name: Extract source firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          TARGET_FIRMWARE="$SOURCE_FIRMWARE" ./scripts/extract_fw.sh
+          ./scripts/extract_fw.sh --ignore-target
 
       - name: Download target firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          SOURCE_FIRMWARE="$TARGET_FIRMWARE" ./scripts/download_fw.sh
+          ./scripts/download_fw.sh --ignore-source
 
       - name: Extract target firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          SOURCE_FIRMWARE="$TARGET_FIRMWARE" ./scripts/extract_fw.sh
+          ./scripts/extract_fw.sh --ignore-source
 
       - name: Build ROM
         run: |
