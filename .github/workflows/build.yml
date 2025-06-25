@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [a73xq, a52sxq, m52xq, r9q2]
+        target: [a52sxq, a73xq, m52xq, r9q, r9q2]
 
     steps:
       - name: Checkout repo
@@ -65,6 +65,7 @@ jobs:
         run: |
           source ./buildenv.sh ${{ matrix.target }}
           TARGET_FIRMWARE="$SOURCE_FIRMWARE" ./scripts/extract_fw.sh
+
       - name: Download target firmware
         run: |
           source ./buildenv.sh ${{ matrix.target }}
