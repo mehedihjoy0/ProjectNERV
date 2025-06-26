@@ -20,9 +20,3 @@ sed -i \
   $WORK_DIR/vendor/etc/fstab.qcom $WORK_DIR/vendor/etc/fstab.emmc
 LOG_STEP_OUT
 
-LOG_STEP_IN "- Replacing kernel binaries"
-rm -f "$WORK_DIR/kernel/boot.img"
-rm -f "$WORK_DIR/kernel/dtbo.img"
-rm -f "$WORK_DIR/kernel/vendor_boot.img"
-cp -rf "$SRC_DIR/prebuilts/kernels/a73xq/"*.img "$WORK_DIR/kernel/"
-LOG_STEP_OUT
