@@ -210,7 +210,7 @@ if [ -n "$TARGET_MODEL" ]; then
 fi
 
 if [ -n "$TARGET_MODEL" ]; then
-    if ! grep -q "\"\\\$TARGET_MODEL\" = \"$TARGET_MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
+    if ! grep -q "\"\\\$TARGET_MODEL\" = \"$TARGET_MODEL\" \| \"\\\$TARGET_MODEL\" == \"$TARGET_MODEL\" \| \"\\\$TARGET_MODEL\" -eq \"$TARGET_MODEL\"" "$SRC_DIR/target/$TARGET_CODENAME/config.sh"; then
         echo "- \"$TARGET_MODEL\" not found in $TARGET_CODENAME config.sh."
         return 1
     fi
