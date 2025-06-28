@@ -84,7 +84,7 @@ if $FORCE; then
     BUILD_ROM=true
 else
     if [ -f "$WORK_DIR/.completed" ]; then
-        if [[ "$(cat "$WORK_DIR/.completed")" == "$(GET_WORK_DIR_HASH)" ]]; then
+        if [[ "$(cat "$WORK_DIR/.completed")" == "$(GET_WORK_DIR_HASH)" ]] && [ -f "$WORK_DIR/.model" ] && [[ "$(cat "$WORK_DIR/.model")" == "$TARGET_MODEL" ]]; then
             LOGW "No changes have been detected in the build environment"
             BUILD_ROM=false
         else
@@ -155,6 +155,9 @@ if $BUILD_ROM; then
     fi
 
     echo -n "$(GET_WORK_DIR_HASH)" > "$WORK_DIR/.completed"
+    if [ -n "$TARGET_MODEL" ]; then
+        echo -n "$TARGET_MODEL" > "$WORK_DIR/.model"
+    fi
 fi
 
 if [ -n "$GITHUB_ACTIONS" ]; then
