@@ -33,4 +33,8 @@ sed -i \
     "$WORK_DIR/system/system/lib64/libPortraitSolution.camera.samsung.so"
 
 LOG_STEP_OUT
+
+LOG_STEP_IN "- Fix changing wallpapers"
+ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/lib64/libImageTagger.camera.samsung.so" 0 0 644 "u:object_r:system_lib_file:s0"
+LOG_STEP_OUT
 LOG_STEP_OUT
