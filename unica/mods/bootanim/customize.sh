@@ -12,4 +12,10 @@ fi
 LOG_STEP_IN "- Adding S25 Sounds"
 DELETE_FROM_WORK_DIR "system" "system/media/audio"
 ADD_TO_WORK_DIR "pa1qxx" "system" "system/media/audio"
+SET_PROP "vendor" "ro.config.ringtone" "ACH_Galaxy_Bells.ogg"
+SET_PROP "vendor" "ro.config.notification_sound" "ACH_Brightline.ogg"
+SET_PROP "vendor" "ro.config.alarm_alert" "ACH_Morning_Xylophone.ogg"
+SET_PROP "vendor" "ro.config.media_sound" "Media_preview_Touch_the_light.ogg"
+SET_PROP "vendor" "ro.config.ringtone_2" "ACH_Atomic_Bell.ogg"
+SET_PROP "vendor" "ro.config.notification_sound_2" "ACH_Three_Star.ogg" 
 LOG_STEP_OUT
