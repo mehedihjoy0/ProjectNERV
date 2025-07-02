@@ -447,12 +447,21 @@ PRINT_HEADER()
     fi
 
     echo    'ui_print(" ");'
-    echo    'ui_print("****************************************");'
+    echo    'ui_print("************************************************");'
+    echo    'ui_print(" ");'
+    echo    'ui_print("              _  __ ____ ___  _   __");'
+    echo    'ui_print("             / |/ // __// _ \| | / /");'
+    echo    'ui_print("            /    // _/ / , _/| |/ / ");'
+    echo    'ui_print("           /_/|_//___//_/|_| |___/  ");'
+    echo    'ui_print(" ");'
     echo -n 'ui_print("'
-    echo -n "Project NERV $ROM_VERSION for $TARGET_DEVICE"
+    for i in $(seq 1 "$SIDE_PADDING"); do
+        echo -n ' '
+    done
+    echo -n "$VERSION_INFO"
     echo    '");'
-    echo    'ui_print("Build system by salvo_giangri @XDAforums");'
-    echo    'ui_print("****************************************");'
+    echo    'ui_print(" ");'
+    echo    'ui_print("************************************************");'
     echo -n 'ui_print("'
     echo -n "One UI version: $ONEUI_VERSION"
     echo    '");'
