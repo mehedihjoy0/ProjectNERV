@@ -65,6 +65,7 @@ priv-app/SearchSelector
 SYSTEM_DEBLOAT+="
 system/app/DRParser
 system/app/DictDiotekForSec
+system/app/KidsHome_Installer
 system/app/FBAppManager_NS
 system/app/MoccaMobile
 system/app/PlayAutoInstallConfig
@@ -133,6 +134,7 @@ system/priv-app/PaymentFramework
 system/priv-app/SOAgent75
 system/priv-app/SamsungCarKeyFw
 system/priv-app/SamsungPass
+system/priv-app/YourPhone_P1_5
 system/priv-app/Upday
 "
 
