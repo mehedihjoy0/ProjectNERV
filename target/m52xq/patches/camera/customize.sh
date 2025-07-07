@@ -63,7 +63,6 @@ system/lib64/libstartrail.camera.samsung.so
 system/lib64/libsuperresolution_raw.arcsoft.so
 system/lib64/libsuperresolutionraw_wrapper_v2.camera.samsung.so
 system/lib64/libtensorflowLite2_11_0_dynamic_camera.so
-system/lib64/libtflite2.myfilters.camera.samsung.so
 system/lib64/vendor.samsung.hardware.frcmc-V1-ndk.so
 "
 for blob in $BLOBS_LIST
