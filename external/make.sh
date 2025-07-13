@@ -132,6 +132,7 @@ ANDROID_TOOLS=true
 APKTOOL=true
 EROFS_UTILS=true
 IMG2SDAT=true
+MAGISKBOOT=true
 SAMLOADER=true
 SIGNAPK=true
 
@@ -156,6 +157,10 @@ IMG2SDAT_EXEC=(
     "blockimgdiff.py" "common.py" "images.py" "img2sdat" "rangelib.py" "sparse_img.py"
 )
 CHECK_TOOLS "${IMG2SDAT_EXEC[@]}" && IMG2SDAT=false
+MAGISKBOOT_EXEC=(
+    "magiskboot"
+)
+CHECK_TOOLS "${MAGISKBOOT_EXEC[@]}" && MAGISKBOOT=false
 SAMLOADER_EXEC=(
     "../venv/bin/samloader"
 )
@@ -170,6 +175,7 @@ if [[ "$1" == "--check-tools" ]]; then
             ! $APKTOOL && \
             ! $EROFS_UTILS && \
             ! $IMG2SDAT && \
+            ! $MAGISKBOOT && \
             ! $SAMLOADER && \
             ! $SIGNAPK; then
         exit 0
@@ -230,6 +236,26 @@ if $IMG2SDAT; then
     )
 
     BUILD "img2sdat" "$SRC_DIR/external/img2sdat" "${IMG2SDAT_CMDS[@]}"
+fi
+if $MAGISKBOOT; then
+    case "$(uname -m)" in
+        arm64|aarch64)
+            ARCH="arm64-v8a"
+            ;;
+        amd64|x86_64)
+            ARCH="x86_64"
+            ;;
+    esac
+    MAGISKBOOT_TMP="$(mktemp -d)"
+    MAGISKBOOT_CMDS=(
+        "curl -L -s -o \"magisk.apk\" \"\$(curl -s https://api.github.com/repos/topjohnwu/Magisk/releases/latest | jq -r \".assets[] | .browser_download_url\" | grep \"Magisk.*.apk\")\""
+        "unzip -q -j \"magisk.apk\" \"lib/$ARCH/libmagiskboot.so\""
+        "mv \"libmagiskboot.so\" \"$TOOLS_DIR/bin/magiskboot\""
+        "chmod +x \"$TOOLS_DIR/bin/magiskboot\""
+    )
+
+    BUILD "magiskboot" "$MAGISKBOOT_TMP" "${MAGISKBOOT_CMDS[@]}"
+    rm -rf "$MAGISKBOOT_TMP"
 fi
 if $SAMLOADER; then
     SAMLOADER_CMDS=(
