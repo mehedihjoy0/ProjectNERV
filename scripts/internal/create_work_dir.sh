@@ -137,6 +137,12 @@ COPY_TARGET_KERNEL()
         LOG_STEP_IN "- Copying target firmware kernel images"
         EVAL "rsync -a --mkpath --delete \"$FW_DIR/$TARGET_FIRMWARE_PATH/kernel\" \"$WORK_DIR\"" || exit 1
         $TARGET_KEEP_ORIGINAL_SIGN || find "$WORK_DIR/kernel" -mindepth 1 -exec "$SRC_DIR/scripts/unsign_bin.sh" {} \;
+        if $TARGET_FS_SWITCHED_TO_EROFS; then
+            LOG "- Patching kernel fstab to erofs"
+            IMG="$WORK_DIR/kernel/boot.img"
+            [ -f "$WORK_DIR/kernel/vendor_boot.img" ] && IMG="$WORK_DIR/kernel/vendor_boot.img"
+            "$SRC_DIR/scripts/switch_to_erofs.sh" "$IMG" &> /dev/null
+        fi
         LOG_STEP_OUT
     else
         [ -d "$WORK_DIR/kernel" ] && rm -rf "$WORK_DIR/kernel"
