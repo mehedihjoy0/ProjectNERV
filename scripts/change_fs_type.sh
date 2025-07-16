@@ -17,7 +17,7 @@
 #
 
 if [ "$#" == 0 ]; then
-    echo "Usage: switch_to_erofs <image>" >&2
+    echo "Usage: change_fs_type <image>" >&2
     exit 1
 fi
 
@@ -36,6 +36,7 @@ fi
 
 IMG_FILE="${IMG#"$WORK_DIR/kernel/"}"
 IMG_OUT="${IMG_FILE%.img}_new.img"
+FSTAB_FILE="$(find "$SRC_DIR/target/$TARGET_CODENAME/patches/filesystem/vendor/etc" -maxdepth 1 -type f -name "fstab*" | head -n 1)"
 
 [ -d "$TMP_DIR" ] && rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
@@ -43,12 +44,11 @@ mkdir -p "$TMP_DIR"
 mv "$IMG" "$TMP_DIR"
 cd "$TMP_DIR"
 
-avbtool erase_footer --image "$IMG_FILE"
 magiskboot unpack -h "$IMG_FILE"
 mkdir ramdisk && cd ramdisk
 cpio -id < "../ramdisk.cpio"
-rm -f "$TMP_DIR/$FSTAB_DIR/fstab"* \
-    && cp "$SRC_DIR/target/$TARGET_CODENAME/patches/erofs/vendor/etc/fstab"* "$TMP_DIR/$FSTAB_DIR"
+rm -f "$TMP_DIR/$FSTAB_DIR/$(basename "$FSTAB_FILE")" \
+    && cp "$FSTAB_FILE" "$TMP_DIR/$FSTAB_DIR"
 find . | cpio -o -H newc > "../ramdisk_new.cpio"
 cd ..
 rm -f ramdisk.cpio && mv ramdisk_new.cpio ramdisk.cpio
