@@ -1,4 +1,0 @@
-id=erofs
-name=EROFS support
-author=saadelasfur
-description=Enables EROFS support.
