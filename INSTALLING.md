@@ -47,9 +47,7 @@ adb sideload ProjectNERV_X.Y.Z-a1b2c3d4_YYYYMMDD_device.zip
 ```
 
 > [!NOTE]
-> On Galaxy M34 5G, the `device` notation is one of `M346B`, `M346B1` and `M346B2`.
->
-> On Galaxy F34, the `device` notation is `f34x`.
+> The `device` notation is `m34x` for Galaxy M34 5G and `f34x` for Galaxy F34.
 
 > [!NOTE]
 > On Windows, you might have to give full path to ADB when using ADB commands. This can be worked around by adding its folder to the "Path" variable under `sysdm.cpl` > Advanced tab > Environment variables...
