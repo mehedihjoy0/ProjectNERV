@@ -1,0 +1,21 @@
+# m34xnsxx (ins_open)
+on early-init && property:ro.boot.em.model=SM-M346B
+    # Firmware blobs
+    mount none /vendor/firmware/SM-M346B/mfc_fw.bin /vendor/firmware/mfc_fw.bin bind
+    mount none /vendor/firmware/SM-M346B/NPU.bin /vendor/firmware/NPU.bin bind
+    mount none /vendor/firmware/SM-M346B/os.checked.bin /vendor/firmware/os.checked.bin bind
+    mount none /vendor/firmware/SM-M346B/vts.bin /vendor/firmware/vts.bin bind
+    mount none /vendor/firmware/SM-M346B/calliope_sram.bin /vendor/firmware/calliope_sram.bin bind
+    # TEEgris
+    mount none /vendor/tee/SM-M346B /vendor/tee bind
+
+# m34xjxx (tur_open)
+on early-init && property:ro.boot.em.model=SM-M346B2
+    # Firmware blobs
+    mount none /vendor/firmware/SM-M346B2/mfc_fw.bin /vendor/firmware/mfc_fw.bin bind
+    mount none /vendor/firmware/SM-M346B2/NPU.bin /vendor/firmware/NPU.bin bind
+    mount none /vendor/firmware/SM-M346B2/os.checked.bin /vendor/firmware/os.checked.bin bind
+    mount none /vendor/firmware/SM-M346B2/vts.bin /vendor/firmware/vts.bin bind
+    mount none /vendor/firmware/SM-M346B2/calliope_sram.bin /vendor/firmware/calliope_sram.bin bind
+    # TEEgris
+    mount none /vendor/tee/SM-M346B2 /vendor/tee bind
