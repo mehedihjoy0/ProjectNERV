@@ -3,8 +3,8 @@ REPLACE_KERNEL_BINARIES()
 {
     local LATEST=$(curl -s https://api.github.com/repos/FlopKernel-Series/flop_s5e8825_kernel/releases/latest)
     local FLOPPY_TAR=$(echo "$LATEST" |
-        jq -r '.assets[] | select(.name | test("Vanilla-exynos1280.*\\.tar$")) | .browser_download_url')
-    
+        jq -r '.assets[] | select(.name | test("OneUI.*Vanilla-exynos1280.*\\.tar$")) | .browser_download_url')
+
     [ -d "$TMP_DIR" ] && rm -rf "$TMP_DIR"
     mkdir -p "$TMP_DIR"
 
