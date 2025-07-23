@@ -1,0 +1,4 @@
+id=wifi
+name=WiFi patches for target device
+author=@ExtremeXT, Bahar KURT
+desciption=Patches system framework to adjust WiFi features for target device
