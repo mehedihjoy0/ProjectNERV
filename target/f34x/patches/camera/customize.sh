@@ -28,7 +28,6 @@ system/lib64/libPortraitDistortionCorrectionCali.arcsoft.so
 system/lib64/libface_landmark.arcsoft.so
 system/lib64/libFacialStickerEngine.arcsoft.so
 system/lib64/libveengine.arcsoft.so
-system/lib64/libimage_enhancement.arcsoft.so
 system/lib64/liblow_light_hdr.arcsoft.so
 system/lib64/libobjectcapture_jni.arcsoft.so
 system/lib64/libobjectcapture.arcsoft.so
