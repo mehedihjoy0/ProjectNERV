@@ -1,0 +1,11 @@
+product 0 2000 755 capabilities=0x0
+product/app 0 2000 755 capabilities=0x0
+product/app/AICore 0 2000 755 capabilities=0x0
+product/app/AICore/AICore.apk 0 2000 644 capabilities=0x0
+product/app/BardShell 0 2000 755 capabilities=0x0
+product/app/BardShell/BardShell.apk 0 2000 644 capabilities=0x0
+product/app/Photos 0 2000 755 capabilities=0x0
+product/app/Photos/Photos.apk 0 2000 644 capabilities=0x0
+product/priv-app 0 2000 755 capabilities=0x0
+product/priv-app/AiWallpaper 0 2000 755 capabilities=0x0
+product/priv-app/AiWallpaper/AiWallpaper.apk 0 2000 644 capabilities=0x0

@@ -1,0 +1,11 @@
+/product u:object_r:system_file:s0
+/product/app u:object_r:system_file:s0
+/product/app/AICore u:object_r:system_file:s0
+/product/app/AICore/AICore\.apk u:object_r:system_file:s0
+/product/app/BardShell u:object_r:system_file:s0
+/product/app/BardShell/BardShell\.apk u:object_r:system_file:s0
+/product/app/Photos u:object_r:system_file:s0
+/product/app/Photos/Photos\.apk u:object_r:system_file:s0
+/product/priv-app u:object_r:system_file:s0
+/product/priv-app/AiWallpaper u:object_r:system_file:s0
+/product/priv-app/AiWallpaper/AiWallpaper\.apk u:object_r:system_file:s0
