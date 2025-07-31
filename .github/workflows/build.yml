@@ -2,6 +2,10 @@ name: Build ProjectNERV
 
 on:
   workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - 'fifteen'
 
 jobs:
   build:
@@ -38,7 +42,7 @@ jobs:
         run: |
           sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
-            jq attr ccache clang ffmpeg golang \
+            jq attr ccache clang p7zip ffmpeg golang \
             libbrotli-dev libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
             libzstd-dev linux-modules-extra-$(uname -r) lld jq protobuf-compiler pcre2-utils webp \
             curl xxd patchelf flex bison libarchive-tools build-essential python3.12-venv
@@ -56,26 +60,16 @@ jobs:
       - name: Build dependencies
         run: source ./buildenv.sh ${{ matrix.target }}
 
-      - name: Download source firmware
+      - name: Download stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh --ignore-target
+          ./scripts/download_fw.sh
 
-      - name: Extract source firmware
+      - name: Extract stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --ignore-target
-
-      - name: Download target firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh --ignore-source
-
-      - name: Extract target firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --ignore-source
-
+          ./scripts/extract_fw.sh
+          
       - name: Build ROM
         run: |
           source ./buildenv.sh ${{ matrix.target }}
