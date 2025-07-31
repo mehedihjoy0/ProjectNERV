@@ -232,9 +232,9 @@ if [[ "$SOURCE_HFR_MODE" != "$TARGET_HFR_MODE" ]]; then
 
     # TODO: this breaks 60hz AOD
     #if [[ "${#TARGET_HFR_MODE}" -le "6" ]]; then
-    if [[ "$TARGET_HFR_MODE" -le "1" ]] && [[ "$TARGET_SINGLE_SYSTEM_IMAGE" == "qssi" ]]; then
+#    if [[ "$TARGET_HFR_MODE" -le "1" ]] && [[ "$TARGET_SINGLE_SYSTEM_IMAGE" == "qssi" ]]; then
        # APPLY_PATCH "system_ext" "priv-app/SystemUI/SystemUI.apk" "$SRC_DIR/unica/patches/product_feature/hfr/SystemUI.apk/0001-Nuke-KEYGUARD_ADJUST_REFRESH_RATE.patch"
-    fi
+#    fi
 
     FTP="
     system/framework/framework.jar/smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali
