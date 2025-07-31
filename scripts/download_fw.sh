@@ -39,7 +39,7 @@ DOWNLOAD_FIRMWARE()
         # Special handling for source firmware - download from the specified URL
         mkdir -p "$ODIN_DIR/${MODEL}_${REGION}"
         echo "- Downloading source firmware from custom URL..."
-        curl -s --retry 5 --retry-delay 5 "https://37-samfw.cloud/v2/IxJCDiMnLjwuCC8DHhAwAw87MT8DMR4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/LwsvAjsHLjA7JwYDDQAjQDQ7Lwo1ETASITssCxIxQQMDFwodIzguQA0kByADFzMWMi8uLzMwLC0jBykpNRYuAAMwLgUBB0EfPDYpIAE4AggJOz49LhEwLDJABkIjCyI/Iws8MQEWCDAeCw0xCREHOTQbIyshAD4OIQAGLC44Hiw0ER4OMiUzLDIlDSs8AD4fJhsGOg8HCkA8AywnCRc+Di8LBxAzBy4RDxYpKTwkHjUeBylCJgceIAM7ITgJNh4cAy8+AwMSMAMBAwgGDSw+By8vKSY7JDYGIztBPBcHIx0zBywbIy8+ETwXIysPESw5JhsGAzNAIQoSAwU5IQgpNRcnPgMXFjsAMxsvNgMIMwA8ES8NL0AvPwk4PBQDCwdCJhYIQB4DDTkjCyIxARYFEw==" -o "$ODIN_DIR/${MODEL}_${REGION}/firmware.zip"
+        curl -s --retry 5 --retry-delay 5 "https://27-samfw.cloud/v2/IxJCDiMnLh41AAItEhEUCzwxCjADNh4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/Dyc2MTUXLDAPNgU/OxEGICEDNh0hBx4LOwgvPyElLD8XNi8HNRtBEC5AHiYNMTkwLiUzBwM2PggjACwsOzg2JDwDKS0yFzMIFwMhFi4DMyADLyEWL0AsHDVABkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgkvIxQjAwcEODEvLxcHPgMBAwgGDSwpPDskKQgXOzQGOAAhKTw/FD01OCBCJggeJQMnLAozOwIUHggsHDIbIAo1Ni8dEhchGzM4MwI4JCw2AScuQTUsKTMjOAZCIwM0MB4WIj8eCzxAIzkTEw==" -o "$ODIN_DIR/${MODEL}_${REGION}/firmware.zip"
         
         echo "- Extracting firmware..."
         unzip -q "$ODIN_DIR/${MODEL}_${REGION}/firmware.zip" -d "$ODIN_DIR/${MODEL}_${REGION}"
