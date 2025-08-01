@@ -58,8 +58,10 @@ jobs:
           cache: 'gradle'
 
       - name: Build dependencies
-        run: source ./buildenv.sh ${{ matrix.target }}
-
+        run: |
+          source ./buildenv.sh ${{ matrix.target }}
+          source ./scripts/utils/firmware_utils.sh
+          source ./out/tools/venv/bin/activate
       - name: Download stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
