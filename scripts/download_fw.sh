@@ -19,8 +19,6 @@
 # shellcheck disable=SC2162
 
 set -e
-source "$SRC_DIR/scripts/utils/firmware_utils.sh" || exit 1
-source "$TOOLS_DIR/venv/bin/activate" || exit 1
 
 # [
 GET_LATEST_FIRMWARE()
