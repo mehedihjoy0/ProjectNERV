@@ -55,9 +55,9 @@ jobs:
 
       - name: Build dependencies
         run: |
-									source ./buildenv.sh ${{ matrix.target }}
-									source ./scripts/utils/firmware_utils.sh
-									source ./out/tools/venv/bin/activate
+          source ./buildenv.sh ${{ matrix.target }}
+          source ./scripts/utils/firmware_utils.sh
+          source ./out/tools/venv/bin/activate
 
       - name: Download stock firmwares
         run: |
