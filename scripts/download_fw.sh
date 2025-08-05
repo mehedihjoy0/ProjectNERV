@@ -19,7 +19,6 @@
 # shellcheck disable=SC2162
 
 set -e
-FORCE=false
 
 FIRMWARES=()
 MODEL=""
@@ -47,7 +46,7 @@ DOWNLOAD_FIRMWARE()
         # Special handling for source firmware - download from the specified URL
         mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
         echo "- Downloading source firmware from custom URL..."
-        curl -s --retry 5 --retry-delay 5 "https://27-samfw.cloud/v2/IxJCDiMnLg0jLCAAARcsETUsIjkzOx4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/EgsvAyE2Hzk0MAUkMgcKBh4XBwI0FzYUPDtBOCMwQQgPFiEQHhE+OjsWBTA0OCIUIxspHjsRIQ01LD4XNQgvPw1AIwA7MTkkHicsIw0xLBc7AzYfL0AKMAM4BkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgkvIxQjAwcEODEvLxcHPgMBAwgGDSwpPDskKQgXOzQGOAAhKTw/FD01OCBCJhYgPyERLD0PLwcGIzsjJDssPDAhAw0xMhYvNjMRFR0BOzAxNQAIQBIIMAEjOAZCIwM0MB4WDTEjCwUdIzkTEw==" -o "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip"
+        curl -s --retry 5 --retry-delay 5 "https://27-samfw.cloud/v2/IxJCDiMnLj88QCw1AzY+NTwDLhI8MR4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/ASczODQWFTkyQC8vAwgpDi84MyYjAAVANEAzGw8bLwo8FzEwNBsFFCEbAh47OwclCTseGxIAAgYvESMANS8+FjIXLz08JSwJMzYGCw8IKSshMSkaATspCTxABkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgkvIxQjAwcEODEvLxcHPgMBAwgGDSwpPDskKQgXOzQGOAAhKTw/FD01OCBCJggwHTMxHTEXJykFPCUpAzwlQQQvBwICNCwzPSMXQQUzLCMdPCwCOw0APCQjOAZCIwM0MB4WDTEjJBUwASITEw==" -o "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip"
         
         echo "- Extracting firmware..."
         unzip -q "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip" -d "$ODIN_DIR/${MODEL}_${CSC}"
