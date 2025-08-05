@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [a52sxq, a73xq, m52xq, r9q, r9q2]
+        target: [m51]
 
     steps:
       - name: Checkout repo
@@ -54,27 +54,20 @@ jobs:
           cache: 'gradle'
 
       - name: Build dependencies
-        run: source ./buildenv.sh ${{ matrix.target }}
+        run: |
+									source ./buildenv.sh ${{ matrix.target }}
+									source ./scripts/utils/firmware_utils.sh
+									source ./out/tools/venv/bin/activate
 
-      - name: Download source firmware
+      - name: Download stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/download_fw.sh --ignore-target
 
-      - name: Extract source firmware
+      - name: Extract stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/extract_fw.sh --ignore-target
-
-      - name: Download target firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh --ignore-source
-
-      - name: Extract target firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --ignore-source
 
       - name: Build ROM
         run: |
