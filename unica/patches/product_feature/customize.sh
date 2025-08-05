@@ -224,7 +224,7 @@ if [[ "$SOURCE_HFR_MODE" != "$TARGET_HFR_MODE" ]]; then
 
     DECODE_APK "system" "system/framework/framework.jar"
     DECODE_APK "system" "system/framework/gamemanager.jar"
-    DECODE_APK "system" "system/framework/gamesdk.jar"
+   # DECODE_APK "system" "system/framework/gamesdk.jar"
     DECODE_APK "system" "system/framework/secinputdev-service.jar"
     DECODE_APK "system" "system/priv-app/SecSettings/SecSettings.apk"
     DECODE_APK "system" "system/priv-app/SettingsProvider/SettingsProvider.apk"
