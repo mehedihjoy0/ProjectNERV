@@ -67,7 +67,7 @@ jobs:
       - name: Extract stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --ignore-target
+          ./scripts/extract_fw.sh
 
       - name: Build ROM
         run: |
