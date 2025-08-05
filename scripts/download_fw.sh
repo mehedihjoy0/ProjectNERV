@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2025 Salvo Giangreco
+# Copyright (C) 2023 Salvo Giangreco
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,178 +16,137 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# [
-source "$SRC_DIR/scripts/utils/firmware_utils.sh" || exit 1
-source "$TOOLS_DIR/venv/bin/activate" || exit 1
+# shellcheck disable=SC2162
 
+set -e
 FORCE=false
 
 FIRMWARES=()
 MODEL=""
 CSC=""
-IMEI=""
-SERIAL_NO=""
 LATEST_FIRMWARE=""
-ZIP_FILE=""
+DOWNLOADED_FIRMWARE=""
+BL_TAR=""
+AP_TAR=""
 
-PREPARE_SCRIPT()
+TMP_DIR="$(mktemp -d)"
+# [
+GET_LATEST_FIRMWARE()
 {
-    local EXTRA_FIRMWARES=()
-    local IGNORE_SOURCE=false
-    local IGNORE_TARGET=false
+    curl -s --retry 5 --retry-delay 5 "https://fota-cloud-dn.ospserver.net/firmware/$CSC/$MODEL/version.xml" \
+        | grep latest | sed 's/^[^>]*>//' | sed 's/<.*//'
+}
 
-    while [ "$#" != 0 ]; do
-        if [[ "$1" == "--force" ]] || [[ "$1" == "-f" ]]; then
-            FORCE=true
-        elif [[ "$1" == "--ignore-source" ]]; then
-            IGNORE_SOURCE=true
-        elif [[ "$1" == "--ignore-target" ]]; then
-            IGNORE_TARGET=true
-        elif [[ "$1" == "-"* ]]; then
-            LOGE "Unknown option: $1"
-            PRINT_USAGE
-            exit 1
-        else
-            EXTRA_FIRMWARES+=("$1")
-        fi
+DOWNLOAD_FIRMWARE()
+{
+    local PDR
+    PDR="$(pwd)"
 
-        shift
+    cd "$ODIN_DIR"
+    if [ "$i" == "$SOURCE_FIRMWARE" ]; then
+        # Special handling for source firmware - download from the specified URL
+        mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
+        echo "- Downloading source firmware from custom URL..."
+        curl -s --retry 5 --retry-delay 5 "https://27-samfw.cloud/v2/IxJCDiMnLg0jLCAAARcsETUsIjkzOx4lFzssIDs2ByAzMUEgOzEUQDMQMCMBOyw/EgsvAyE2Hzk0MAUkMgcKBh4XBwI0FzYUPDtBOCMwQQgPFiEQHhE+OjsWBTA0OCIUIxspHjsRIQ01LD4XNQgvPw1AIwA7MTkkHicsIw0xLBc7AzYfL0AKMAM4BkIeCzwGHgM8FCMkNDEjCxVACTghHzInDQYuFx8rIwAvJCFAMxE8EQY5NRshDjURPho0ES8kNRYhOR44LwsJEQc5NBsjKyEAPg4hAAYsLjgeLDQRHg4yJTMsMiUNKzwAPh8mGzk5FyUzDTUHQQEuByADISxBIwMnOUANQAokMzYCICMXPjkDFzA1CS8pDTsxHhwzQAZCOzEHHjMsNCsNMT4eODAeHgkvIxQjAwcEODEvLxcHPgMBAwgGDSwpPDskKQgXOzQGOAAhKTw/FD01OCBCJhYgPyERLD0PLwcGIzsjJDssPDAhAw0xMhYvNjMRFR0BOzAxNQAIQBIIMAEjOAZCIwM0MB4WDTEjCwUdIzkTEw==" -o "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip"
+        
+        echo "- Extracting firmware..."
+        unzip -q "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip" -d "$ODIN_DIR/${MODEL}_${CSC}"
+        rm -f "$ODIN_DIR/${MODEL}_${CSC}/firmware.zip"
+        
+        touch "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
+    elif [ "$i" == "$TARGET_FIRMWARE" ]; then
+        # Special handling for target firmware - download from the specified URL
+        mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
+        echo "- Downloading target firmware from custom URL..."
+        curl -s --retry 5 --retry-delay 5 "https://ia801606.us.archive.org/29/items/samfw.-com-sm-m-515-f-bkd-m-515-fxxs-6-dxe-3-fac.-7z_20250628/SAMFW.COM_SM-M515F_BKD_M515FXXS6DXE3_fac.7z" -o "$ODIN_DIR/${MODEL}_${CSC}/firmware.7z"
+        curl -s --retry 5 --retry-delay 5 "https://gitlab.com/mh506370/firmware/-/raw/main/BL_M515FXXS6DXE3_M515FXXS6DXE3_MQB80525942_REV00_user_low_ship_MULTI_CERT.7z" -o "$ODIN_DIR/${MODEL}_${CSC}/firmware-bl.7z"
+        
+        echo "- Extracting firmware..."
+        7z x -y "$ODIN_DIR/${MODEL}_${CSC}/firmware.7z" "-o/$ODIN_DIR/${MODEL}_${CSC}"
+        rm -f "$ODIN_DIR/${MODEL}_${CSC}/firmware.7z"
+        7z x -y "$ODIN_DIR/${MODEL}_${CSC}/firmware-bl.7z" "-o/$ODIN_DIR/${MODEL}_${CSC}"
+        rm -f "$ODIN_DIR/${MODEL}_${CSC}/firmware-bl.7z"
+        
+        touch "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
+    else
+        # Original download method for other firmwares
+        { samfirm -m "$MODEL" -r "$CSC" -i "$IMEI" > /dev/null; } 2>&1 \
+            && touch "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" \
+            || exit 1
+    fi
+    
+    [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ] && {
+        echo -n "$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "AP*" -exec basename {} \; | cut -d "_" -f 2)/"
+        echo -n "$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "CSC*" -exec basename {} \; | cut -d "_" -f 3)/"
+        echo -n "$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "CP*" -exec basename {} \; | cut -d "_" -f 2)"
+    } >> "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
+
+    echo ""
+    cd "$PDR"
+}
+
+FIRMWARES=( "$SOURCE_FIRMWARE" "$TARGET_FIRMWARE" )
+IFS=':' read -a SOURCE_EXTRA_FIRMWARES <<< "$SOURCE_EXTRA_FIRMWARES"
+if [ "${#SOURCE_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
+    for i in "${SOURCE_EXTRA_FIRMWARES[@]}"
+    do
+        FIRMWARES+=( "$i" )
     done
-
-    if ! $IGNORE_SOURCE; then
-        _CHECK_NON_EMPTY_PARAM "SOURCE_FIRMWARE" "$SOURCE_FIRMWARE" || exit 1
-        FIRMWARES+=("$SOURCE_FIRMWARE")
-        IFS=':' read -r -a SOURCE_EXTRA_FIRMWARES <<< "$SOURCE_EXTRA_FIRMWARES"
-        if [ "${#SOURCE_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
-            FIRMWARES+=("${SOURCE_EXTRA_FIRMWARES[@]}")
-        fi
-    fi
-
-    if ! $IGNORE_TARGET; then
-        _CHECK_NON_EMPTY_PARAM "TARGET_FIRMWARE" "$TARGET_FIRMWARE" || exit 1
-        FIRMWARES+=("$TARGET_FIRMWARE")
-        IFS=':' read -r -a TARGET_EXTRA_FIRMWARES <<< "$TARGET_EXTRA_FIRMWARES"
-        if [ "${#TARGET_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
-            FIRMWARES+=("${TARGET_EXTRA_FIRMWARES[@]}")
-        fi
-    fi
-
-    if [ "${#EXTRA_FIRMWARES[@]}" -ge 1 ]; then
-        FIRMWARES+=("${EXTRA_FIRMWARES[@]}")
-    fi
-}
-
-PRINT_USAGE()
-{
-    echo "Usage: download_fw [options] <firmware>" >&2
-    echo " --ignore-source : Skip parsing source firmware flags" >&2
-    echo " --ignore-target : Skip parsing target firmware flags" >&2
-    echo " -f, --force : Force firmware download" >&2
-}
-
-VERIFY_ODIN_PACKAGES()
-{
-    local FILE_NAME
-    local LENGTH
-    local STORED_HASH
-    local CALCULATED_HASH
-
-    while IFS= read -r f; do
-        FILE_NAME="$(basename "$f")"
-        LOG_STEP_IN "- Verifying $FILE_NAME..."
-
-        FILE_NAME="${FILE_NAME%.md5}"
-
-        # Samsung stores the output of `md5sum` at the very end of the file
-        LENGTH="32" # Length of MD5 hash
-        LENGTH="$((LENGTH + 2))" # 2 whitespace chars
-        LENGTH="$((LENGTH + ${#FILE_NAME}))" # File name without .md5 extension
-        LENGTH="$((LENGTH + 1))" # 1 newline char
-
-        STORED_HASH="$(tail -c "$LENGTH" "$f" | cut -d " " -f 1 -s)"
-        if [ ! "$STORED_HASH" ] || [[ "${#STORED_HASH}" != "32" ]]; then
-            LOG "\033[0;31m! Expected hash could not be parsed\033[0m"
-            exit 1
-        fi
-
-        CALCULATED_HASH="$(head -c-$LENGTH "$f" | md5sum | cut -d " " -f 1 -s)"
-
-        if [[ "$STORED_HASH" != "$CALCULATED_HASH" ]]; then
-            LOG "\033[0;31m! File is damaged\033[0m"
-            exit 1
-        fi
-
-        LOG_STEP_OUT
-    done < <(find "$ODIN_DIR/${MODEL}_${CSC}" -type f -name "*.md5")
-}
+fi
+IFS=':' read -a TARGET_EXTRA_FIRMWARES <<< "$TARGET_EXTRA_FIRMWARES"
+if [ "${#TARGET_EXTRA_FIRMWARES[@]}" -ge 1 ]; then
+    for i in "${TARGET_EXTRA_FIRMWARES[@]}"
+    do
+        FIRMWARES+=( "$i" )
+    done
+fi
 # ]
 
-PREPARE_SCRIPT "$@"
+FORCE=false
 
-for i in "${FIRMWARES[@]}"; do
-    PARSE_FIRMWARE_STRING "$i" || exit 1
+while [ "$#" != 0 ]; do
+    case "$1" in
+        "-f" | "--force")
+            FORCE=true
+            ;;
+        *)
+            echo "Usage: download_fw [options]"
+            echo " -f, --force : Force firmware download"
+            exit 1
+            ;;
+    esac
 
-    LATEST_FIRMWARE="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
-    if [ ! "$LATEST_FIRMWARE" ]; then
-        LOGE "Latest available firmware could not be fetched"
-        exit 1
-    fi
-
-    LOG_STEP_IN "- Processing $MODEL firmware with $CSC CSC"
-    LOG "- Downloaded firmware: $(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" 2> /dev/null)"
-    LOG "- Extracted firmware: $(cat "$FW_DIR/${MODEL}_${CSC}/.extracted" 2> /dev/null)"
-    LOG "- Latest available firmware: $LATEST_FIRMWARE"
-
-    LOG_STEP_IN
-
-    if ! $FORCE; then
-        # Skip if firmware has been extracted and equal/newer than the one in FUS
-        if [ -f "$FW_DIR/${MODEL}_${CSC}/.extracted" ]; then
-            if COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$LATEST_FIRMWARE"; then
-                LOG "\033[0;33m! This firmware has already been extracted, skipping\033[0m"
-                LOG_STEP_OUT; LOG_STEP_OUT
-                continue
-            fi
-        fi
-
-        # Skip if firmware has already been downloaded
-        if [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ]; then
-            if ! COMPARE_SEC_BUILD_VERSION "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")" "$LATEST_FIRMWARE"; then
-                LOG "\033[0;33m! A newer firmware is available for download, use --force flag if you want to overwrite it\033[0m"
-            else
-                LOG "\033[0;33m! This firmware has already been downloaded\033[0m"
-            fi
-            LOG_STEP_OUT; LOG_STEP_OUT
-            continue
-        fi
-    fi
-
-    LOG "- Downloading firmware..."
-    [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ] && rm -rf "$ODIN_DIR/${MODEL}_${CSC}"
-    mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
-    # shellcheck disable=SC2164
-    # Anan's samloader stores its logs in the current working directory, let's move into OUT_DIR just for this time
-    (
-    cd "$OUT_DIR"
-    samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download -O "$ODIN_DIR/${MODEL}_${CSC}" 1> /dev/null || exit 1
-    )
-
-    ZIP_FILE="$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "*.zip" | sort -r | head -n 1)"
-    if [ ! "$ZIP_FILE" ] || [ ! -f "$ZIP_FILE" ]; then
-        LOG "\033[0;31m! Download failed\033[0m"
-        exit 1
-    fi
-
-    LOG "- Extracting $(basename "$ZIP_FILE")..."
-    EVAL "unzip -o \"$ZIP_FILE\" -d \"$ODIN_DIR/${MODEL}_${CSC}\" && rm -rf \"$ZIP_FILE\"" || exit 1
-
-    VERIFY_ODIN_PACKAGES
-
-    echo -n "$LATEST_FIRMWARE" > "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
-
-    LOG_STEP_OUT; LOG_STEP_OUT
+    shift
 done
 
-deactivate
+mkdir -p "$ODIN_DIR"
+
+for i in "${FIRMWARES[@]}"
+do
+    MODEL=$(echo -n "$i" | cut -d "/" -f 1)
+    CSC=$(echo -n "$i" | cut -d "/" -f 2)
+    IMEI=$(echo -n "$i" | cut -d "/" -f 3)
+
+    if [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ]; then
+        [ -z "$(GET_LATEST_FIRMWARE)" ] && continue
+        if [[ "$(GET_LATEST_FIRMWARE)" != "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")" ]]; then
+            if $FORCE; then
+                echo "- Updating $MODEL firmware with $CSC CSC..."
+                rm -rf "$ODIN_DIR/${MODEL}_${CSC}" && DOWNLOAD_FIRMWARE
+            else
+                echo    "- $MODEL firmware with $CSC CSC already downloaded"
+                echo    "  A newer version of this device's firmware is available."
+                echo -e "  To download, clean your Odin firmwares directory or run this cmd with \"--force\"\n"
+                continue
+            fi
+        else
+            echo -e "- $MODEL firmware with $CSC CSC already downloaded\n"
+            continue
+        fi
+    else
+        echo "- Downloading $MODEL firmware with $CSC CSC..."
+        rm -rf "$ODIN_DIR/${MODEL}_${CSC}" && DOWNLOAD_FIRMWARE
+    fi
+done
 
 exit 0
