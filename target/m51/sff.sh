@@ -91,7 +91,7 @@ SEC_FLOATING_FEATURE_WIFI_SUPPORT_ADPS=
 SEC_FLOATING_FEATURE_AUDIO_CONFIG_INTERPRETER=0
 SEC_FLOATING_FEATURE_AUDIO_CONFIG_MULTI_MIC=2
 SEC_FLOATING_FEATURE_AUDIO_CONFIG_REMOTE_MIC=FW
-SEC_FLOATING_FEATURE_AUDIO_CONFIG_SOUNDALIVE_VERSION=eq_custom,uhq_onoff,karaoke,adapt,dvfs_35_percent
+SEC_FLOATING_FEATURE_AUDIO_CONFIG_SOUNDALIVE_VERSION=eq_custom,uhq_level,karaoke,adapt,dvfs_700000
 SEC_FLOATING_FEATURE_AUDIO_CONFIG_VOLUMEMONITOR_STAGE=1
 
 # Fingerprint sensor
@@ -112,8 +112,8 @@ SEC_FLOATING_FEATURE_CAMERA_CONFIG_MEMORY_USAGE_LEVEL=3
 SEC_FLOATING_FEATURE_CAMERA_CONFIG_NIGHT_FRONT_DISPLAY_FLASH_TRANSPARENT=50
 SEC_FLOATING_FEATURE_CAMERA_CONFIG_QRCODE_INTERVAL=500
 #SEC_FLOATING_FEATURE_CAMERA_CONFIG_STRIDE_OCR_VERSION=V1
-SEC_FLOATING_FEATURE_CAMERA_CONFIG_UW_DISTORTION_CORRECTION=0,109,2,19010102,4000,3000,0,0,0,0
-SEC_FLOATING_FEATURE_CAMERA_CONFIG_VENDOR_LIB_INFO=beauty.samsung.v4,face_landmark.arcsoft.v2_1,facial_attribute.samsung.v1,swuwdc.arcsoft.v1,event_detection.samsung.v2,food.samsung.v1,selfie_correction.samsung.v1,dual_bokeh.samsung.v1,single_bokeh.samsung.v2,scene_detection.samsung.v1,smart_scan.samsung.v2,mfhdr.arcsoft.v1,llhdr.arcsoft.v1,human_tracking.arcsoft.v2_1
+SEC_FLOATING_FEATURE_CAMERA_CONFIG_UW_DISTORTION_CORRECTION=0,110,2,19010504,4000,3000,0,0,0,1
+SEC_FLOATING_FEATURE_CAMERA_CONFIG_VENDOR_LIB_INFO=beauty.samsung.v4,single_bokeh.samsung.v2,dual_bokeh.samsung.v1,facial_attribute.samsung.v1,mfhdr.arcsoft.v1,llhdr.arcsoft.v1,human_tracking.arcsoft.v2_1,scene_detection.samsung.v1,event_detection.samsung.v1,food.samsung.v1,intelligent_guide.samsung.v1,smart_scan.samsung.v2,localtm.samsung.v1_1,selfie_correction.samsung.v1,swldc.samsung.v1,face_landmark.arcsoft.v2,swuwdc.arcsoft.v1
 SEC_FLOATING_FEATURE_CAMERA_CONFIG_VERSION_FILTER_PROVIDER=5
 SEC_FLOATING_FEATURE_CAMERA_CONFIG_WIDE_DISTORTION_CORRECTION=0,0,0,0,0,0,0,0,0,0
 SEC_FLOATING_FEATURE_CAMERA_DOCUMENTSCAN_SOLUTIONS=CV_DEWARPING
