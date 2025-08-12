@@ -130,11 +130,15 @@ COPY_TARGET_FIRMWARE()
         fi
     done
 bash "$SRC_DIR/target/m51/patches/media/customize.sh"
-bash "$SRC_DIR/target/m51/patches/prime-kernel/customize.sh"
 }
 
 COPY_TARGET_KERNEL()
 {
+# Download and extract Prime-Kernel
+wget -q "https://gitlab.com/mh506370/firmware/-/raw/main/prime-kernel.7z" 
+7z x -y "prime-kernel.7z" "-o/$FW_DIR/$TARGET_FIRMWARE_PATH/kernel" >/dev/null
+rm -f "prime-kernel.7z"
+
     if [ -d "$FW_DIR/$TARGET_FIRMWARE_PATH/kernel" ]; then
         LOG_STEP_IN "- Copying target firmware kernel images"
         EVAL "rsync -a --mkpath --delete \"$FW_DIR/$TARGET_FIRMWARE_PATH/kernel\" \"$WORK_DIR\"" || exit 1
