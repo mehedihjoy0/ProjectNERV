@@ -129,6 +129,8 @@ COPY_TARGET_FIRMWARE()
             [ -f "$WORK_DIR/configs/fs_config-$f" ] && rm -f "$WORK_DIR/configs/fs_config-$f"
         fi
     done
+bash "$SRC_DIR/target/m51/patches/media/customize.sh"
+bash "$SRC_DIR/target/m51/patches/prime-kernel/customize.sh"
 }
 
 COPY_TARGET_KERNEL()
